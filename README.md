@@ -85,25 +85,39 @@ An Example Subreddit with Embedded Posts:
 ``` 
 -->
 
-## [Link to Commented First Draft Schema](db.js) 
+## [Link to Commented First Draft Schema](src/db.js) 
 
-(___TODO__: create a first draft of your Schemas in db.js and link to it_)
+<!-- (___TODO__: create a first draft of your Schemas in db.js and link to it_) -->
 
 ## Wireframes
 
-(___TODO__: wireframes for all of the pages on your site; they can be as simple as photos of drawings or you can use a tool like Balsamiq, Omnigraffle, etc._)
+<!-- (___TODO__: wireframes for all of the pages on your site; they can be as simple as photos of drawings or you can use a tool like Balsamiq, Omnigraffle, etc._) -->
 
-/list/create - page for creating a new shopping list
+/all - main page that shows all posts from all categories  
+Anonymous User POV
+![anon all](documentation/anon-all.png)
+Logged in User POV
+![user all](documentation/user-all.png)
 
-![list create](documentation/list-create.png)
+/\<category-name\> - page that shows all posts of specified category  
+e.g. /programming
+![anon programming](documentation/anon-programming.png)
 
-/list - page for showing all shopping lists
+/\<category-name\>/\<post-slug\> - page that shows specific post of specified category  
+e.g. /programming/lorem-ipsum
+Anonymous User POV
+![anon programming post](documentation/anon-programming-post.png)
+Logged in User POV
+![user programming post](documentation/user-programming-post.png)
 
-![list](documentation/list.png)
+/create - page to create a post
+![create post](documentation/user-createpost.png)
 
-/list/slug - page for showing specific shopping list
+/login - page to login
+![login](documentation/login.png)
 
-![list](documentation/list-slug.png)
+/login - page to register
+![register](documentation/register.png)
 
 ## Site map
 
