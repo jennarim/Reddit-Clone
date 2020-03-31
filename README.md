@@ -1,41 +1,77 @@
-The content below is an example project proposal / requirements document. Replace the text below the lines marked "__TODO__" with details specific to your project. Remove the "TODO" lines.
-
-(___TODO__: your project name_)
-
-# Shoppy Shoperson 
+# Reddit Clone
 
 ## Overview
 
-(___TODO__: a brief one or two paragraph, high-level description of your project_)
+<!-- (___TODO__: a brief one or two paragraph, high-level description of your project_) -->
+Reddit Clone is a web app based off of the social news discussion site, Reddit. Visitors of the site can view relevant posts under broad categories such as programming and food. Users can register and login to create their own link/text/photo posts. Users can also access their profile, where they will be able to see the posts they have made. 
 
-Remembering what to buy at the grocery store is waaaaay too difficult. Also, shopping for groceries when you're hungry leads to regrettable purchases. Sooo... that's where Shoppy Shoperson comes in!
-
-Shoppy Shoperson is a web app that will allow users to keep track of multiple grocery lists. Users can register and login. Once they're logged in, they can create or view their grocery list. For every list that they have, they can add items to the list or cross off items.
-
+Time permitting, comments can be made by users under every post. 
 
 ## Data Model
 
-(___TODO__: a description of your application's data and their relationships to each other_) 
+<!-- (___TODO__: a description of your application's data and their relationships to each other_) -->
+The application will store Categories, Users, and Posts.
+* Categories can contain multiple Posts (added via user forms)
+* Users can make Posts. 
 
-The application will store Users, Lists and Items
+<!--
+The application will store Categories, Users, Posts and Comments.
+* Categories can contain multiple Posts (added via user forms)
+* Posts can contain multiple Comments.
+* Users can make Posts and Comments. 
+-->
 
-* users can have multiple lists (via references)
-* each list can have multiple items (by embedding)
 
-(___TODO__: sample documents_)
+<!--(___TODO__: sample documents_) -->
 
 An Example User:
 
 ```javascript
 {
-  username: "shannonshopper",
+  username: "freud",
   hash: // a password hash,
-  lists: // an array of references to List documents
+  posts: // an array of references to Post documents
 }
 ```
 
-An Example List with Embedded Items:
+An Example Post:
 
+```javascript
+{
+  category: "programming",
+  title: "Benefits to JavaScript?",
+  type: // string with value link, text, or img,
+  body: // string with value of url, text, or img
+  username: "freud",
+  createdAt: // timestamp
+}
+```
+<!-- comments: // an array of references to Comment documents -->
+
+<!-- An Example Comment: 
+```javascript
+{
+  post: // reference to specific Post document,
+  username: // name of user who made comment,
+  text: // content of comment
+}```
+-->
+
+An Example Category with Embedded Posts:
+
+```javascript
+{
+  name: "programming",
+  posts: [
+    { category: "programming", title: "Benefits to JavaScript?", type: "text", body: "There are a lot!", username: "freud", createdAt: // timestamp },
+    { category: "programming", title: "Video on why I love to code", type: "link", body: "www.youtube.com/why-i-love-to-code", username: "marth", createdAt: // timestamp }
+  ],
+  active: true // is user viewing this category?
+}
+```
+
+<!--
+An Example Subreddit with Embedded Posts:
 ```javascript
 {
   user: // a reference to a User object
@@ -46,8 +82,8 @@ An Example List with Embedded Items:
   ],
   createdAt: // timestamp
 }
-```
-
+``` 
+-->
 
 ## [Link to Commented First Draft Schema](db.js) 
 
