@@ -116,14 +116,18 @@ Logged in User POV
 /login - page to login
 ![login](documentation/login.png)
 
-/login - page to register
+/register - page to register
 ![register](documentation/register.png)
+
+Note: Shown in the wireframes are features such as upvote scores and comments. These features will only be implemented when the base work is done. 
 
 ## Site map
 
-(___TODO__: draw out a site map that shows how pages are related to each other_)
+![sitemap](documentation/sitemap.png)
 
-Here's a [complex example from wikipedia](https://upload.wikimedia.org/wikipedia/commons/2/20/Sitemap_google.jpg), but you can create one without the screenshots, drop shadows, etc. ... just names of pages and where they flow to.
+<!-- (___TODO__: draw out a site map that shows how pages are related to each other_)
+
+Here's a [complex example from wikipedia](https://upload.wikimedia.org/wikipedia/commons/2/20/Sitemap_google.jpg), but you can create one without the screenshots, drop shadows, etc. ... just names of pages and where they flow to. -->
 
 ## User Stories or Use Cases
 
