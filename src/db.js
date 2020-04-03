@@ -1,28 +1,36 @@
-const mongoose = require('mongoose');
+const mongoose = require('mongoose'),
+	  passportLocalMongoose = require('passport-local-mongoose');
+// const URLSlugs = require('mongoose-url-slugs');
+const Schema = mongoose.Schema;
 
-const postSchema = mongoose.Schema({
-	category:  {type: String, required: true},
+const postSchema = Schema({
+	category:  {type: Schema.Types.ObjectId, ref: 'Category', required: true},
 	title: 	   {type: String, required: true},
 	type: 	   {type: String, required: true},
 	body: 	   {type: String, required: true},
-	username:  {type: String, required: true},
+	// author:    {type: Schema.Types.ObjectId, ref: 'User', required: true},
 	createdAt: {type: Date, required: true},
 });
 
-const userSchema = mongoose.Schema({
+const userSchema = Schema({
 	username: {type: String, required: true},
-	hash: 	  {type: String, required: true},
+	password: {type: String, required: true},
 	posts:    [{type: Schema.ObjectId, ref: 'Post'}]
 });
 
-const categorySchema = mongoose.Schema({
+const categorySchema = Schema({
 	name: {type: String, required: true},
 	posts: [{type: Schema.ObjectId, ref: 'Post'}],
 	active: Boolean
 });
 
+// postSchema.plugin(URLSlugs());
+userSchema.plugin(passportLocalMongoose);
+
+
 mongoose.model('Post', postSchema);
 mongoose.model('User', userSchema);
 mongoose.model('Category', categorySchema);
+
 
 mongoose.connect("mongodb://localhost/redditClone", {useNewUrlParser: true, useUnifiedTopology: true});
