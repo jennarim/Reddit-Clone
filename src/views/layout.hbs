@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<head>
+<title></title>
+</head>
+<body>
+		<header>reddit clone</header>
+		{{#if user}}
+			Logged in as {{user.username}}
+		{{/if}}
+		<nav>
+			{{#each categories}}
+				<a href='/c/{{name}}'> {{name}} </a> | 
+			{{/each}}
+		</nav>
+		{{{body}}}
+</body>
+</html>
