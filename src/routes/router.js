@@ -8,22 +8,38 @@ const Post = mongoose.model('Post');
 
 const router = express.Router();
 
-router.get('/', (req, res) => {
-	// res.send("test");
-// 	const context = {
-// 		language: 'handlebars',
-// 		adjective: 'fun'
-// 	};
-// 	console.log(Handlebars.partials);
-// 	res.render('partialtest', context);
-	res.send("hi");
-});
+function ensureLoggedIn(req, res, next) {
+	if (req.user) {
 
-router.get('/login', (req, res) => {
+		next();
+	} else {
+		res.redirect('/register');
+	}
+}
+
+function ensureLoggedOut(req, res, next) {
+	if (!req.user) {
+		next();
+	} else {
+		res.redirect('/');
+	}
+}
+
+function comparePostsByDate(a, b) {
+	if (a.createdAt.getTime() < b.createdAt.getTime()) {
+		return -1;
+	} else if  (a.createdAt.getTime() > b.createdAt.getTime()) {
+		return 1;
+	} else {
+		return 0;
+	}
+}
+
+router.get('/login', ensureLoggedOut, (req, res) => {
 	res.render('login');
 });
 
-router.get('/register', (req, res) => {
+router.get('/register', ensureLoggedOut, (req, res) => {
 	res.render('register');
 });
 
@@ -31,6 +47,7 @@ router.post('/login', (req, res) => {
 	passport.authenticate('local', (err, user) => {
 		if (user) {
 			req.logIn(user, (err) => {
+				// res.locals.userId 
 				res.redirect('/');
 			});
 		} else {
@@ -38,7 +55,6 @@ router.post('/login', (req, res) => {
 		}
 	})(req, res);
 });
-
 
 router.post('/register', (req, res) => {
 	User.register(new User({username: req.body.username, password: req.body.password}),
@@ -53,36 +69,90 @@ router.post('/register', (req, res) => {
 	});
 });
 
+router.get('/logout', ensureLoggedIn, (req, res) => {
+	req.logout();
+	res.redirect('/');
+});
 
+function getAllPosts(posts, postIds, res) {
+	if (postIds.length === 0) {
+		posts.sort(comparePostsByDate).reverse();
+		res.render('all', {posts});
+		return;
+	}
+	Post.findOne({_id: postIds[0]}, (err, post) => {
+		if (err) {
+			console.log(err);
+		} else {
+			posts.push(post);
+			postIds.shift();
+			getAllPosts(posts, postIds, res);
+		}
+	});
+}
+
+router.get('/', (req, res) => {
+	// res.send("test");
+// 	const context = {
+// 		language: 'handlebars',
+// 		adjective: 'fun'
+// 	};
+// 	console.log(Handlebars.partials);
+// 	res.render('partialtest', context);
+	Category.find({}, (err, categories) => {
+		if (err) {
+			console.log(err);
+		} else {
+			const allPostIds = [];
+			categories.forEach((category) => {
+				category.posts.forEach(postId => {
+					allPostIds.push(postId);
+				});
+			});
+			const posts = [];
+			getAllPosts(posts, allPostIds, res);
+		}
+	});
+});
 
 router.get('/c/:category', (req, res) => {
 	Category.findOne({name: req.params.category}, (err, category) => {
 		if (err) {
 			console.log(err);
+		} else if (!category) {
+			res.send('not valid category');
 		} else {
 			Post.find({category: category["_id"]}, (err, posts) => {
 				if (err) {
 					console.log(err);
 				} else {
-					console.log(posts);
-					res.render('category', {category, posts});
+					// console.log(posts);
+					res.render('category', {categoryName: category.name, posts});
 				}
 			});	
 		}
 	});
 });
 
-router.get('/create', (req, res) => {
-
+router.get('/create', ensureLoggedIn, (req, res) => {
 	res.render('create');
 });
 
-router.post('/create', (req, res) => {
-	// new Post({
-	// 	category: 
-	// })
+router.post('/create', ensureLoggedIn, (req, res) => {
+	new Post({
+		category: req.body.category,
+		title: req.body.title,
+		type: req.body.type,
+		body: req.body.body,
+		// author: 
+	}).save((err, cat) => {
+		if (err) {
+			console.log(err);
+		} else {
+			res.redirect('/c/' + req.body.category);
+		}
+	});
 	// make sure to add the post into category's posts
-	res.redirect('/');
 });
 
 module.exports = router;

@@ -8,7 +8,7 @@ const postSchema = Schema({
 	title: 	   {type: String, required: true},
 	type: 	   {type: String, required: true},
 	body: 	   {type: String, required: true},
-	// author:    {type: Schema.Types.ObjectId, ref: 'User', required: true},
+	author:    {type: Schema.Types.ObjectId, ref: 'User', required: true},
 	createdAt: {type: Date, required: true},
 });
 

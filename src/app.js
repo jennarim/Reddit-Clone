@@ -31,8 +31,30 @@ app.use(passport.session());
 const Category = mongoose.model('Category');
 const Post = mongoose.model('Post');
 
+Handlebars.registerPartial('postPartial', fs.readFileSync(path.join(__dirname, 'views/partials/postPartial.hbs'), 'utf8'));
+
+// Handlebars.registerHelper('whatis', function(param) {
+//     console.log("is", param);
+// });
+
+// Handlebars.registerHelper('categoryNameOf', function(post) {
+// 	// console.log("THE POST IS", post);
+// 	if (!post) {
+// 		return "------";
+// 	} else {
+// 		Category.findOne({_id: post.category}, (err, category) => {
+// 		// console.log(category.name);
+// 		return category.name;
+// 		});	
+// 	}
+// });
+
 app.use((req, res, next) => {
-	res.locals.user = req.user;
+	if (req.user) {
+		res.locals.username = req.user.username;
+	} else {
+		res.locals.username = undefined;
+	}
 	next();
 });
 
@@ -44,9 +66,8 @@ app.use((req, res, next) => {
 });
 
 // const postVar = Handlebars.compile(''+);
-Handlebars.registerPartial('postPartial', fs.readFileSync(path.join(__dirname, 'views/partials/postPartial.hbs'), 'utf8'));
 // Handlebars.registerPartial('partialTemplate', '{{language}} is {{adjective}}');
-console.log(Handlebars.partials);
+// console.log(Handlebars.partials);
 
 app.use('/', router);
 
