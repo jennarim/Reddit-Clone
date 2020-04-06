@@ -35,6 +35,8 @@ function comparePostsByDate(a, b) {
 	}
 }
 
+
+
 router.get('/login', ensureLoggedOut, (req, res) => {
 	res.render('login');
 });
@@ -99,11 +101,13 @@ router.get('/', (req, res) => {
 // 	};
 // 	console.log(Handlebars.partials);
 // 	res.render('partialtest', context);
+	console.log(req.user);
 	Category.find({}, (err, categories) => {
 		if (err) {
 			console.log(err);
 		} else {
 			const allPostIds = [];
+			console.log(categories);
 			categories.forEach((category) => {
 				category.posts.forEach(postId => {
 					allPostIds.push(postId);
@@ -127,7 +131,7 @@ router.get('/c/:category', (req, res) => {
 					console.log(err);
 				} else {
 					// console.log(posts);
-					res.render('category', {categoryName: category.name, posts});
+					res.render('category', {categoryName: req.params.category, posts});
 				}
 			});	
 		}
@@ -138,21 +142,38 @@ router.get('/create', ensureLoggedIn, (req, res) => {
 	res.render('create');
 });
 
+function redirectToCategoryPage(post, objectId, res) {
+	Category.findOne({_id: objectId}, (err, category) => {
+		if (err) {
+			console.log(err);
+		} else {
+			category.posts.push(post["_id"]);
+			category.save((err) => {
+				if (err) {
+					console.log(err);	
+				} else {
+					res.redirect('/c/' + category.name);
+				}
+			});
+		}
+	});
+}
+
 router.post('/create', ensureLoggedIn, (req, res) => {
 	new Post({
 		category: req.body.category,
 		title: req.body.title,
 		type: req.body.type,
 		body: req.body.body,
-		// author: 
-	}).save((err, cat) => {
+		author: req.user["_id"],
+		createdAt: new Date()
+	}).save((err, post) => {
 		if (err) {
 			console.log(err);
 		} else {
-			res.redirect('/c/' + req.body.category);
+			redirectToCategoryPage(post, req.body.category, res);
 		}
 	});
-	// make sure to add the post into category's posts
 });
 
 module.exports = router;
