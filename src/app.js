@@ -33,10 +33,6 @@ const Post = mongoose.model('Post');
 
 Handlebars.registerPartial('postPartial', fs.readFileSync(path.join(__dirname, 'views/partials/postPartial.hbs'), 'utf8'));
 
-// Handlebars.registerHelper('whatis', function(param) {
-//     console.log("is", param);
-// });
-
 // Handlebars.registerHelper('categoryNameOf', function(post) {
 // 	// console.log("THE POST IS", post);
 // 	if (!post) {

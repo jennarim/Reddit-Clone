@@ -1,5 +1,6 @@
 const mongoose = require('mongoose'),
-	  passportLocalMongoose = require('passport-local-mongoose');
+	  passportLocalMongoose = require('passport-local-mongoose'),
+	  URLSlugs = require('mongoose-url-slugs');
 // const URLSlugs = require('mongoose-url-slugs');
 const Schema = mongoose.Schema;
 
@@ -26,7 +27,7 @@ const categorySchema = Schema({
 
 // postSchema.plugin(URLSlugs());
 userSchema.plugin(passportLocalMongoose);
-
+postSchema.plugin(URLSlugs('title'));
 
 mongoose.model('Post', postSchema);
 mongoose.model('User', userSchema);
