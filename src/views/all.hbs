@@ -1,5 +1,4 @@
+<h1> You're on /all </h1>
 {{#each posts}}
-	<h1>{{title}}</h1>
-	<h2> Created at: {{createdAt}} </h2>
-	<p>{{body}}</p>
+	{{> postPartial}}
 {{/each}}
