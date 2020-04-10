@@ -35,7 +35,21 @@ function comparePostsByDate(a, b) {
 	}
 }
 
+function log(name, content) {
+	console.log(name, ":");
+	console.log(content);
+	console.log("##########");
+}
 
+function getAllPosts(categories) {
+	const posts = [];
+	categories.forEach(category => {
+		category.posts.forEach(post => {
+			posts.push(post);
+		});
+	});
+	return posts;
+}
 
 router.get('/login', ensureLoggedOut, (req, res) => {
 	res.render('login');
@@ -73,25 +87,26 @@ router.post('/register', (req, res) => {
 
 router.get('/logout', ensureLoggedIn, (req, res) => {
 	req.logout();
+	log("Logged out. req.user:", req.user);
 	res.redirect('/');
 });
 
-function getAllPosts(posts, postIds, res) {
-	if (postIds.length === 0) {
-		posts.sort(comparePostsByDate).reverse();
-		res.render('all', {posts});
-	} else {
-		Post.findOne({_id: postIds[0]}, (err, post) => {
-			if (err) {
-				console.log(err);
-			} else {
-				posts.push(post);
-				postIds.shift();
-				getAllPosts(posts, postIds, res);
-			}
-		});
-	}
-}
+// function getAllPosts(posts, postIds, res) {
+// 	if (postIds.length === 0) {
+// 		posts.sort(comparePostsByDate).reverse();
+// 		res.render('all', {posts});
+// 	} else {
+// 		Post.findOne({_id: postIds[0]}, (err, post) => {
+// 			if (err) {
+// 				console.log(err);
+// 			} else {
+// 				posts.push(post);
+// 				postIds.shift();
+// 				getAllPosts(posts, postIds, res);
+// 			}
+// 		});
+// 	}
+// }
 
 router.get('/', (req, res) => {
 	// res.send("test");
@@ -101,25 +116,25 @@ router.get('/', (req, res) => {
 // 	};
 // 	console.log(Handlebars.partials);
 // 	res.render('partialtest', context);
-	console.log(req.user);
-	Category.find({}, (err, categories) => {
+	// console.log(req.user);
+
+	// Populate Category's own fields
+	// Category.find({}).populate('posts').exec((err, categories) => {
+	// 	console.log("Populated Category ", categories);
+	// 	Category.find({}, (err, categories) => {
+	// 		console.log("Looking at categories again", categories);
+	// 	});
+	// });
+
+	Category.find({}).populate('posts').exec((err, categories) => {
 		if (err) {
 			console.log(err);
 		} else {
-			// Display all the posts across all categories sorted by most recent
-			const allPostIds = [];
-			console.log(categories);
-			categories.forEach((category) => {
-				category.posts.forEach(postId => {
-					allPostIds.push(postId);
-				});
-			});
-			const posts = [];
-			if (posts.length === 0 || posts.length === 1) {
-				res.render('all', {posts});
-			} else {
-				getAllPosts(posts, allPostIds, res);
-			}
+			const posts = getAllPosts(categories);
+			posts.sort(comparePostsByDate).reverse();
+
+			log("Posts", posts);
+			res.render('all', {posts});
 		}
 	});
 });
@@ -130,16 +145,13 @@ router.get('/c/:category', (req, res) => {
 			console.log(err);
 		} else if (!category) {
 			res.send('not valid category');
-		} else {
-			Post.find({category: category["_id"]}, (err, posts) => {
-				if (err) {
-					console.log(err);
-				} else {
-					// console.log(posts);
-					res.render('category', {categoryName: req.params.category, posts});
-				}
-			});	
 		}
+	}).populate('posts').exec((err, category) => {
+		if (err) {
+			console.log(err);
+		} else {
+			res.render('category', {categoryName: category.name, posts: category.posts});
+		}	
 	});
 });
 
@@ -176,6 +188,13 @@ router.post('/create', ensureLoggedIn, (req, res) => {
 		if (err) {
 			console.log(err);
 		} else {
+			// Add this post to Author's posts
+			User.findOne({_id: req.user._id}, (err, user) => {
+				user.posts.push(post._id);
+			});
+
+			log("New Post has been created.", post);
+
 			redirectToCategoryPage(post, req.body.category, res);
 		}
 	});

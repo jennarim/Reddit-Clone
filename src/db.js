@@ -33,5 +33,4 @@ mongoose.model('Post', postSchema);
 mongoose.model('User', userSchema);
 mongoose.model('Category', categorySchema);
 
-
 mongoose.connect("mongodb://localhost/redditClone", {useNewUrlParser: true, useUnifiedTopology: true});

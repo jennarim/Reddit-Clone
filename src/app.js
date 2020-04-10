@@ -61,6 +61,25 @@ app.use((req, res, next) => {
 	});
 });
 
+// app.use((req, res, next) => {
+// 	Post.find({}, (err, posts) => {
+// 		console.log("POsts before:", posts);
+// 		Post.find().populate('category', 'name').exec((err, posts) => {
+// 			console.log("posts after category populate:", posts);
+// 			next();
+// 		});
+// 	})
+// });
+
+// app.use((req, res, next) => {
+// 	Post.find({}, (err, posts) => {
+// 		console.log("posts next middle:", posts);
+// 		next();
+// 	});
+// });
+
+
+
 // const postVar = Handlebars.compile(''+);
 // Handlebars.registerPartial('partialTemplate', '{{language}} is {{adjective}}');
 // console.log(Handlebars.partials);

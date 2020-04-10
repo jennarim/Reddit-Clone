@@ -1,4 +1,7 @@
 <h1> Hello. You're on the {{categoryName}} category! </h1>
 {{#each posts}}
-	{{> postPartial post=this categoryName=../categoryName}}
+	<!-- {{!-- {{> postPartial post=this categoryName=../categoryName}} --}} -->
+	<h1>{{title}}</h1>
+	<h2> Created at: {{createdAt}} </h2>
+	<p>{{body}}</p>
 {{/each}}
