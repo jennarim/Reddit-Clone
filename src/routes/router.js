@@ -80,17 +80,17 @@ function getAllPosts(posts, postIds, res) {
 	if (postIds.length === 0) {
 		posts.sort(comparePostsByDate).reverse();
 		res.render('all', {posts});
-		return;
+	} else {
+		Post.findOne({_id: postIds[0]}, (err, post) => {
+			if (err) {
+				console.log(err);
+			} else {
+				posts.push(post);
+				postIds.shift();
+				getAllPosts(posts, postIds, res);
+			}
+		});
 	}
-	Post.findOne({_id: postIds[0]}, (err, post) => {
-		if (err) {
-			console.log(err);
-		} else {
-			posts.push(post);
-			postIds.shift();
-			getAllPosts(posts, postIds, res);
-		}
-	});
 }
 
 router.get('/', (req, res) => {
@@ -106,6 +106,7 @@ router.get('/', (req, res) => {
 		if (err) {
 			console.log(err);
 		} else {
+			// Display all the posts across all categories sorted by most recent
 			const allPostIds = [];
 			console.log(categories);
 			categories.forEach((category) => {
@@ -114,7 +115,11 @@ router.get('/', (req, res) => {
 				});
 			});
 			const posts = [];
-			getAllPosts(posts, allPostIds, res);
+			if (posts.length === 0 || posts.length === 1) {
+				res.render('all', {posts});
+			} else {
+				getAllPosts(posts, allPostIds, res);
+			}
 		}
 	});
 });
