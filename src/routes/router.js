@@ -91,22 +91,6 @@ router.get('/logout', ensureLoggedIn, (req, res) => {
 	res.redirect('/');
 });
 
-// function getAllPosts(posts, postIds, res) {
-// 	if (postIds.length === 0) {
-// 		posts.sort(comparePostsByDate).reverse();
-// 		res.render('all', {posts});
-// 	} else {
-// 		Post.findOne({_id: postIds[0]}, (err, post) => {
-// 			if (err) {
-// 				console.log(err);
-// 			} else {
-// 				posts.push(post);
-// 				postIds.shift();
-// 				getAllPosts(posts, postIds, res);
-// 			}
-// 		});
-// 	}
-// }
 
 router.get('/', (req, res) => {
 	// res.send("test");
@@ -116,23 +100,11 @@ router.get('/', (req, res) => {
 // 	};
 // 	console.log(Handlebars.partials);
 // 	res.render('partialtest', context);
-	// console.log(req.user);
-
-	// Populate Category's own fields
-	// Category.find({}).populate('posts').exec((err, categories) => {
-	// 	console.log("Populated Category ", categories);
-	// 	Category.find({}, (err, categories) => {
-	// 		console.log("Looking at categories again", categories);
-	// 	});
-	// });
-
-	Category.find({}).populate('posts').exec((err, categories) => {
+	Post.find({}).populate('category', 'name').exec((err, posts) => {
 		if (err) {
 			console.log(err);
 		} else {
-			const posts = getAllPosts(categories);
 			posts.sort(comparePostsByDate).reverse();
-
 			log("Posts", posts);
 			res.render('all', {posts});
 		}
@@ -196,6 +168,22 @@ router.post('/create', ensureLoggedIn, (req, res) => {
 			log("New Post has been created.", post);
 
 			redirectToCategoryPage(post, req.body.category, res);
+		}
+	});
+});
+
+router.get('/c/:category/:postSlug', (req, res) => {
+	Category.findOne({name: req.params.category}, (err, category) => {
+		if (err) {
+			console.log(err);
+		} else {
+			Post.findOne({slug: req.params.postSlug}, (err, post) => {
+				if (err) {
+					console.log(err);
+				} else {
+					res.render('post', {post});
+				}
+			});
 		}
 	});
 });
