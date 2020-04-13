@@ -8,9 +8,8 @@ const express = require('express'),
 	  hbs = require('hbs'),
 	  // Handlebars = require('Handlebars'),
 	  fs = require('fs'),
-	  passport = require('passport');
-
-const config = require('./config.json');
+	  passport = require('passport'),
+	  config = require('./config.json');
 
 const app = express();
 
@@ -20,20 +19,17 @@ const sessionOptions = {
     resave: true 
 };
 
+hbs.registerPartial('postPartial', fs.readFileSync(path.join(__dirname, 'views/partials/postPartial.hbs'), 'utf8'));
+
+const Category = mongoose.model('Category');
+const Post = mongoose.model('Post');
+
 app.set('view engine', 'hbs');
 app.use(session(sessionOptions));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({extended: false}));
 app.use(passport.initialize());
 app.use(passport.session());
-
-const Category = mongoose.model('Category');
-const Post = mongoose.model('Post');
-
-const partial = fs.readFileSync(path.join(__dirname, 'views/partials/postPartial.hbs'), 'utf8');
-
-hbs.registerPartial('postPartial', partial);
-console.log(hbs.partials);
 
 function handleError(err) {
 	res.render('error');
@@ -53,7 +49,7 @@ app.use((req, res, next) => {
 app.use((req, res, next) => {
 	Category.find({}, (err, categories) => {
 		if (err) {
-			handeError();
+			handleError();
 		} else {
 			res.locals.categories = categories;
 		}

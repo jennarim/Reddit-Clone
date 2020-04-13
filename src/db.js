@@ -1,7 +1,7 @@
 const mongoose = require('mongoose'),
 	  passportLocalMongoose = require('passport-local-mongoose'),
 	  URLSlugs = require('mongoose-url-slugs');
-// const URLSlugs = require('mongoose-url-slugs');
+
 const Schema = mongoose.Schema;
 
 const postSchema = Schema({
@@ -25,7 +25,6 @@ const categorySchema = Schema({
 	active: Boolean
 });
 
-// postSchema.plugin(URLSlugs());
 userSchema.plugin(passportLocalMongoose);
 postSchema.plugin(URLSlugs('title'));
 
