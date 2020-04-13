@@ -1,7 +1,4 @@
 <h1> You're on /all </h1>
 {{#each posts}}
-	<a href='/c/{{category.name}}/{{slug}}'>{{title}}</a>
-	<h2> Created at: {{createdAt}} </h2>
-	<a href='/u/{{author.username}}'> Created by: {{author.username}} </a>
-	<p>{{body}}</p>
+	{{> postPartial}}
 {{/each}}

@@ -1,8 +1,4 @@
 <h1> Welcome to {{username}}'s Page </h1>
-
 {{#each posts}}
-	<a href='/c/{{category.name}}/{{slug}}'>{{title}}</a>
-	<h2> Posted on: c/{{category.name}}</h2>
-	<h2> Created at: {{createdAt}} </h2>
-	<p>{{body}}</p>
+	{{> postPartial}}
 {{/each}}

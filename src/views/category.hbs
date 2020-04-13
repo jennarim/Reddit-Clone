@@ -1,8 +1,4 @@
 <h1> Hello. You're on the {{categoryName}} category! </h1>
 {{#each posts}}
-	<!-- {{!-- {{> postPartial post=this categoryName=../categoryName}} --}} -->
-	<a href='/c/{{../categoryName}}/{{slug}}'>{{title}}</a>
-	<h2> Created at: {{createdAt}} </h2>
-	<a href='/u/{{author.username}}'> Created by: {{author.username}} </a>
-	<p>{{body}}</p>
+	{{> postPartial}}
 {{/each}}
