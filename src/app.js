@@ -5,7 +5,8 @@ const express = require('express'),
 	  path = require('path'),
 	  mongoose = require('mongoose'),
 	  session = require('express-session'),
-	  Handlebars = require('hbs'),
+	  hbs = require('hbs'),
+	  // Handlebars = require('Handlebars'),
 	  fs = require('fs'),
 	  passport = require('passport');
 
@@ -13,8 +14,6 @@ const config = require('./config.json');
 const router = require('./routes/router.js');
 
 const app = express();
-
-// const secretKey = fs.readFileSync(path.join(__dirname, 'session-key.txt'), 'utf8');
 
 const sessionOptions = { 
     secret: config.secret, 
@@ -32,20 +31,16 @@ app.use(passport.session());
 const Category = mongoose.model('Category');
 const Post = mongoose.model('Post');
 
-Handlebars.registerPartial('postPartial', fs.readFileSync(path.join(__dirname, 'views/partials/postPartial.hbs'), 'utf8'));
+const partial = fs.readFileSync(path.join(__dirname, 'views/partials/postPartial.hbs'), 'utf8');
 
-// Handlebars.registerHelper('categoryNameOf', function(post) {
-// 	// console.log("THE POST IS", post);
-// 	if (!post) {
-// 		return "------";
-// 	} else {
-// 		Category.findOne({_id: post.category}, (err, category) => {
-// 		// console.log(category.name);
-// 		return category.name;
-// 		});	
-// 	}
-// });
+hbs.registerPartial('postPartial', partial);
+console.log(hbs.partials);
 
+function handleError(err) {
+	res.render('error');
+};
+
+// Make username available to templates
 app.use((req, res, next) => {
 	if (req.user) {
 		res.locals.username = req.user.username;
