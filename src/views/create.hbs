@@ -4,12 +4,12 @@
 			<option value="{{_id}}">{{name}}</option>
 		{{/each}}
 	</select>
-	<input type="text" name="title" value="Enter title here.">
+	<input type="text" name="title" value="{{err.errors.name.value}}">
 	<select name="type">
 		<option value="text">text</option>
 		<option value="image">image</option>
 	</select>
-	<input type="text" name="body" value="Enter post body or image url here.">
+	<input type="text" name="body" value="{{err.errors.name.value}}">
 	
 	
 	<input type="submit">

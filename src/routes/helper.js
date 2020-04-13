@@ -24,8 +24,9 @@ function comparePostsByDate(a, b) {
 	}
 }
 
-function handleError(err, res) {
-	res.render('error');
+function handleError(res, path, err) {
+	console.log(err);
+	res.render(path, {err});
 }
 
 function log(name, content) {

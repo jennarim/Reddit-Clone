@@ -4,23 +4,24 @@ const mongoose = require('mongoose'),
 
 const Schema = mongoose.Schema;
 
+const enumOptions = {values: ['text', 'img'], message:'{VALUE} is not a valid post type.'};
 const postSchema = Schema({
-	category:  {type: Schema.Types.ObjectId, ref: 'Category', required: true},
-	title: 	   {type: String, required: true},
-	type: 	   {type: String, required: true},
-	body: 	   {type: String, required: true},
-	author:    {type: Schema.Types.ObjectId, ref: 'User', required: true},
-	createdAt: {type: Date, required: true},
+	category:  {type: Schema.Types.ObjectId, ref: 'Category', required: [true, '{PATH} is required.']},
+	title: 	   {type: String, required: [true, '{PATH} is required.']},
+	type: 	   {type: String, required: [true, '{PATH} is required.'], enum: enumOptions},
+	body: 	   {type: String, required: [true, '{PATH} is required.']},
+	author:    {type: Schema.Types.ObjectId, ref: 'User', required: [true, '{PATH} is required.']},
+	createdAt: {type: Date, required: [true, '{PATH} is required.']}
 });
 
 const userSchema = Schema({
-	username: {type: String, required: true},
-	password: {type: String, required: true},
+	username: {type: String, required: [true, '{PATH} is required.']},
+	password: {type: String, required: [true, '{PATH} is required.']},
 	posts:    [{type: Schema.ObjectId, ref: 'Post'}]
 });
 
 const categorySchema = Schema({
-	name: {type: String, required: true},
+	name: {type: String, required: [true, '{PATH} is required.']},
 	posts: [{type: Schema.ObjectId, ref: 'Post'}],
 	active: Boolean
 });

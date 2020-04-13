@@ -20,6 +20,7 @@ const sessionOptions = {
 };
 
 hbs.registerPartial('postPartial', fs.readFileSync(path.join(__dirname, 'views/partials/postPartial.hbs'), 'utf8'));
+hbs.registerPartial('errorPartial', fs.readFileSync(path.join(__dirname, 'views/partials/errorPartial.hbs'), 'utf8'));
 
 const Category = mongoose.model('Category');
 const Post = mongoose.model('Post');
@@ -60,6 +61,7 @@ app.use((req, res, next) => {
 // Route handling
 app.use('/', require('./routes/home.js'));
 app.use('/', require('./routes/create.js'));
+app.use('/', require('./routes/user.js'));
 app.use('/', require('./routes/loginRegister.js'));
 app.use('/', require('./routes/category.js'));
 

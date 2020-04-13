@@ -6,8 +6,11 @@ const User = mongoose.model('User')
 const Category = mongoose.model('Category');
 const Post = mongoose.model('Post');
 
+const router = express.Router();
+
 router.get('/u/:username', (req, res) => {
-	User.findOne({username: req.params.username})
+	User
+		.findOne({username: req.params.username})
 		.populate({
 			path: 'posts',
 			populate: [{
@@ -21,7 +24,9 @@ router.get('/u/:username', (req, res) => {
 		})
 		.exec((err, user) => {
 			if (err) {
-				helper.handleError(err, res);
+				helper.handleError(res, 'user', err);
+			} else if (!user) {
+				res.send('user dne');
 			} else {
 				res.render('user', {username: user.username, posts: user.posts});
 			}

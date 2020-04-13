@@ -22,13 +22,18 @@ router.post('/create', helper.ensureLoggedIn, (req, res) => {
 		createdAt: new Date()
 	}).save((err, post) => {
 		if (err) {
-			helper.handleError(err, res);
+			helper.handleError(res, 'create', err);
 		} else {
 			User.updateOne({_id: req.user._id}, {$push: {posts: post._id}})
 			.then(() => {
 				Category.findOneAndUpdate({_id: post.category}, {$push: {posts: post._id}}, {new: true}, (err, category) => {
-					console.log("* CAT", category);
-					res.redirect('/c/' + category.name);
+					if (err) {
+						helper.handleError(res, 'category', err);
+					} else if (!category) {
+						res.send('not valid category');
+					} else {
+						res.redirect('/c/' + category.name);
+					}
 				});
 			});
 		}
