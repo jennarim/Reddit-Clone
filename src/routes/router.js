@@ -99,14 +99,17 @@ router.get('/', (req, res) => {
 // 	};
 // 	console.log(Handlebars.partials);
 // 	res.render('partialtest', context);
-	Post.find({}).populate('category', 'name').exec((err, posts) => {
-		if (err) {
-			console.log(err);
-		} else {
-			posts.sort(comparePostsByDate).reverse();
-			log("Posts", posts);
-			res.render('all', {posts});
-		}
+	Post.find({})
+		.populate('category', 'name')
+		.populate('author')
+		.exec((err, posts) => {
+			if (err) {
+				console.log(err);
+			} else {
+				posts.sort(comparePostsByDate).reverse();
+				log("Posts", posts);
+				res.render('all', {posts});
+			}
 	});
 });
 
@@ -117,7 +120,15 @@ router.get('/c/:category', (req, res) => {
 		} else if (!category) {
 			res.send('not valid category');
 		}
-	}).populate('posts').exec((err, category) => {
+	})
+	.populate({
+		path: 'posts',
+		populate: { 
+			path: 'author',
+			model: 'User'
+		}
+	})
+	.exec((err, category) => {
 		if (err) {
 			console.log(err);
 		} else {
@@ -140,7 +151,7 @@ router.post('/create', ensureLoggedIn, (req, res) => {
 		title: req.body.title,
 		type: req.body.type,
 		body: req.body.body,
-		author: req.user["_id"],
+		author: req.user._id,
 		createdAt: new Date()
 	}).save((err, post) => {
 		if (err) {
