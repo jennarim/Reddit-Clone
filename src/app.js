@@ -11,7 +11,6 @@ const express = require('express'),
 	  passport = require('passport');
 
 const config = require('./config.json');
-const router = require('./routes/router.js');
 
 const app = express();
 
@@ -50,36 +49,22 @@ app.use((req, res, next) => {
 	next();
 });
 
+// Make list of all categories available to templates
 app.use((req, res, next) => {
 	Category.find({}, (err, categories) => {
-		res.locals.categories = categories;
+		if (err) {
+			handeError();
+		} else {
+			res.locals.categories = categories;
+		}
 		next();	
 	});
 });
 
-// app.use((req, res, next) => {
-// 	Post.find({}, (err, posts) => {
-// 		console.log("POsts before:", posts);
-// 		Post.find().populate('category', 'name').exec((err, posts) => {
-// 			console.log("posts after category populate:", posts);
-// 			next();
-// 		});
-// 	})
-// });
-
-// app.use((req, res, next) => {
-// 	Post.find({}, (err, posts) => {
-// 		console.log("posts next middle:", posts);
-// 		next();
-// 	});
-// });
-
-
-
-// const postVar = Handlebars.compile(''+);
-// Handlebars.registerPartial('partialTemplate', '{{language}} is {{adjective}}');
-// console.log(Handlebars.partials);
-
-app.use('/', router);
+// Route handling
+app.use('/', require('./routes/home.js'));
+app.use('/', require('./routes/create.js'));
+app.use('/', require('./routes/loginRegister.js'));
+app.use('/', require('./routes/category.js'));
 
 app.listen(3000);
