@@ -9,14 +9,15 @@ const express = require('express'),
 	  fs = require('fs'),
 	  passport = require('passport');
 
+const config = require('./config.json');
 const router = require('./routes/router.js');
 
 const app = express();
 
-const secretKey = fs.readFileSync(path.join(__dirname, 'session-key.txt'), 'utf8');
+// const secretKey = fs.readFileSync(path.join(__dirname, 'session-key.txt'), 'utf8');
 
 const sessionOptions = { 
-    secret: secretKey, 
+    secret: config.secret, 
     saveUninitialized: true, 
     resave: true 
 };

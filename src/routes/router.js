@@ -10,7 +10,6 @@ const router = express.Router();
 
 function ensureLoggedIn(req, res, next) {
 	if (req.user) {
-
 		next();
 	} else {
 		res.redirect('/register');
@@ -132,20 +131,7 @@ router.get('/create', ensureLoggedIn, (req, res) => {
 });
 
 function redirectToCategoryPage(post, objectId, res) {
-	Category.findOne({_id: objectId}, (err, category) => {
-		if (err) {
-			console.log(err);
-		} else {
-			category.posts.push(post["_id"]);
-			category.save((err) => {
-				if (err) {
-					console.log(err);	
-				} else {
-					res.redirect('/c/' + category.name);
-				}
-			});
-		}
-	});
+	
 }
 
 router.post('/create', ensureLoggedIn, (req, res) => {
@@ -161,13 +147,43 @@ router.post('/create', ensureLoggedIn, (req, res) => {
 			console.log(err);
 		} else {
 			// Add this post to Author's posts
-			User.findOne({_id: req.user._id}, (err, user) => {
-				user.posts.push(post._id);
+			// User.findOne({_id: req.user._id}, (err, user) => {
+			// 	if (err) {
+			// 		console.log(err);
+			// 	} else {
+			// 		user.posts.push(post._id);
+			// 		user.save((err, user) => {
+			// 			log("New Post has been created.", post);
+			// 			redirectToCategoryPage(post, req.body.category, res);
+			// 		});
+			// 	}
+			// });
+			User.updateOne({_id: req.user._id}, {$push: {posts: post._id}})
+			.then(() => {
+				Category.findOneAndUpdate({_id: post.category}, {$push: {posts: post._id}}, {new: true}, (err, category) => {
+					console.log("* CAT", category);
+					res.redirect('/c/' + category.name);
+				});
 			});
+			// .then(() => {
+				
+			// });
 
-			log("New Post has been created.", post);
-
-			redirectToCategoryPage(post, req.body.category, res);
+			// Add this post to Category's posts
+			// Category.findOne({_id: post.category}, (err, category) => {
+			// 	if (err) {
+			// 		console.log(err);
+			// 	} else {
+			// 		category.posts.push(post._id);
+			// 		category.save((err) => {
+			// 			if (err) {
+			// 				console.log(err);	
+			// 			} else {
+			// 				res.redirect('/c/' + category.name);
+			// 			}
+			// 		});
+			// 	}
+			// });
 		}
 	});
 });
@@ -186,6 +202,24 @@ router.get('/c/:category/:postSlug', (req, res) => {
 			});
 		}
 	});
+});
+
+router.get('/u/:username', (req, res) => {
+	User.findOne({username: req.params.username})
+		.populate({
+			path: 'posts',
+			populate: {
+				path: 'category',
+				model: 'Category'
+			}
+		})
+		.exec((err, user) => {
+			if (err) {
+				console.log(err);
+			} else {
+				res.render('user', {username: user.username, posts: user.posts});
+			}
+		});
 });
 
 module.exports = router;
