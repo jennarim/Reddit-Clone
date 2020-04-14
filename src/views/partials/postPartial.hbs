@@ -1,8 +1,8 @@
-<div>
-	<a href='/c/{{category.name}}/{{slug}}'>{{title}}</a>
-	<h2> Created at: {{createdAt}} </h2>
-	<h2> Posted at: <a href='/c/{{category.name}}'>{{category.name}}</a> </h2>
-	<a style="display:block" href='/u/{{author.username}}'> Created by: {{author.username}} </a>
+<div class="post">
+	<h1><a href='/c/{{category.name}}/{{slug}}'>{{title}}</a></h1>
+	<h3> Created at: {{createdAt}} </h3>
+	<a href='/c/{{category.name}}'>c/{{category.name}}</a>
+	<a style="display:block" href='/u/{{author.username}}'> u/{{author.username}} </a>
 
 	{{#if (isText this)}}
 	<p>{{body}}</p>
