@@ -1,5 +1,12 @@
-<a href='/c/{{category.name}}/{{slug}}'>{{title}}</a>
-<h2> Created at: {{createdAt}} </h2>
-<h2> Posted at: <a href='/c/{{category.name}}'>{{category.name}}</a> </h2>
-<a href='/u/{{author.username}}'> Created by: {{author.username}} </a>
-<p>{{body}}</p>
+<div>
+	<a href='/c/{{category.name}}/{{slug}}'>{{title}}</a>
+	<h2> Created at: {{createdAt}} </h2>
+	<h2> Posted at: <a href='/c/{{category.name}}'>{{category.name}}</a> </h2>
+	<a style="display:block" href='/u/{{author.username}}'> Created by: {{author.username}} </a>
+
+	{{#if (isText this)}}
+	<p>{{body}}</p>
+	{{else}}
+	<img src="{{body}}" height="200px">
+	{{/if}}
+</div>
