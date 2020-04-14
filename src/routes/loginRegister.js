@@ -1,7 +1,8 @@
 const express = require('express'),
 	  passport = require('passport'),
 	  mongoose = require('mongoose'),
-	  helper = require('./helper.js');
+	  helper = require('./helper.js'),
+	  {check, validationResult} = require('express-validator');
 
 const User = mongoose.model('User')
 const Category = mongoose.model('Category');
@@ -19,27 +20,45 @@ router.get('/register', helper.ensureLoggedOut, (req, res) => {
 
 router.post('/login', (req, res) => {
 	passport.authenticate('local', (err, user) => {
-		if (user) {
+		if (err) {
+			console.log(err);
+		} else if (user) {
 			req.logIn(user, (err) => {
-				res.redirect('/');
+				if (err) {
+					console.log(err);
+				} else {
+					res.redirect('/');
+				}
 			});
 		} else {
-			res.render('login', {message: 'Your login or password is incorrect.'});
+			res.render('login', {err});
 		}
 	})(req, res);
 });
 
 router.post('/register', (req, res) => {
-	User.register(new User({username: req.body.username, password: req.body.password}),
-		req.body.password, (err, user) => {
+	if (req.body.password !== req.body.passwordConfirmation) {
+		res.render('register', {err: {errors: [{message: 'Passwords do not match.'}]}})
+	} else {
+		const newUser = new User({username: req.body.username, password: req.body.password});
+		newUser.validate((err) => {
 			if (err) {
-				res.render('register', {message:'Your registration info is not valid.'})
+				res.render('register', {err});
 			} else {
-				passport.authenticate('local')(req, res, () => {
-					res.redirect('/');
+				User.register(newUser,
+					req.body.password, (err, user) => {
+						if (err) {
+							err.errors = [{message: err.message}];
+							res.render('register', {err})
+						} else {
+							passport.authenticate('local')(req, res, () => {
+								res.redirect('/');
+							});
+						}
 				});
 			}
-	});
+		});
+	}	
 });
 
 router.get('/logout', helper.ensureLoggedIn, (req, res) => {
