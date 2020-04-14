@@ -1,8 +1,7 @@
 const express = require('express'),
 	  passport = require('passport'),
 	  mongoose = require('mongoose'),
-	  helper = require('./helper.js'),
-	  {check, validationResult} = require('express-validator');
+	  helper = require('./helper.js');
 
 const User = mongoose.model('User')
 const Category = mongoose.model('Category');
