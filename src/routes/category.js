@@ -50,8 +50,8 @@ router.get('/c/:category/:postSlug', (req, res) => {
 				} else if (!post) {
 					res.render('not a valid post');
 				} else {
-					console.log(post);
-					res.render('post', {post});
+					// console.log(post);
+					res.render('post', post);
 				}
 			});
 		}
