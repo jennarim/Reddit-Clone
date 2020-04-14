@@ -1,7 +1,7 @@
 <h2> Login </h2>
 
-<form method="POST" action="">
-	username: <input type="text" name="username">
-	password: <input type="text" name="password">
+<form class="validate" method="POST" action="">
+	username: <input type="text" name="username" pattern="([A-Za-z0-9])+\w" minlength='3' maxlength='30' required>
+	password: <input type="text" name="password" minlength='3' maxlength='30' required>
 	<input type="submit">
 </form>

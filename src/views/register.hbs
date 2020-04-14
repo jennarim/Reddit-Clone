@@ -1,8 +1,8 @@
 <h2> Register </h2>
 
-<form method="POST" action="">
-	username: <input type="text" name="username">
-	password: <input type="text" name="password">
-	password confirmation: <input type="text" name="passwordConfirmation">
+<form class="validate" method="POST" action="">
+	username: <input type="text" name="username" pattern="([A-Za-z0-9])+\w" minlength='3' maxlength='30' required>
+	password: <input type="text" name="password" minlength='3' maxlength='30' required>
+	password confirmation: <input type="text" name="passwordConfirmation" >
 	<input type="submit">
 </form>

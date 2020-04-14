@@ -16,8 +16,8 @@ const postSchema = Schema({
 });
 
 const userSchema = Schema({
-	username: {type: String, required: [true, '{PATH} is required.'], minlength: [1, 'Should be more than 1 character'], maxlength: [30, 'Should be less than 30 characters'], validate: [vr.isAlphanumeric, 'Username must be alphanumeric']},
-	password: {type: String, required: [true, '{PATH} is required.'], minlength: [1, 'Should be more than 1 character'], maxlength: [30, 'Should be less than 30 characters']},
+	username: {type: String, required: [true, '{PATH} is required.'], minlength: [3, 'Should be more than 3 character'], maxlength: [30, 'Should be less than 30 characters'], validate: [vr.isAlphanumeric, 'Username must be alphanumeric']},
+	password: {type: String, required: [true, '{PATH} is required.'], minlength: [3, 'Should be more than 3 character'], maxlength: [30, 'Should be less than 30 characters']},
 	posts:    [{type: Schema.ObjectId, ref: 'Post'}]
 });
 
