@@ -33,4 +33,17 @@ mongoose.model('Post', postSchema);
 mongoose.model('User', userSchema);
 mongoose.model('Category', categorySchema);
 
-mongoose.connect("mongodb://localhost/redditClone", {useNewUrlParser: true, useUnifiedTopology: true});
+let dbconf;
+if (process.env.NODE_ENV === 'PRODUCTION') {
+	const fs = require('fs');
+	const path = require('path');
+	const fn = path.join(__dirname, 'config.json');
+	const data = fs.readFileSync(fn);
+
+	const conf = JSON.parse(data);
+	dbconf = conf.dbconf;
+} else {
+	dbconf = "mongodb://localhost/redditClone";
+}
+
+mongoose.connect(dbconf, {useNewUrlParser: true, useUnifiedTopology: true});

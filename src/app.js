@@ -68,4 +68,4 @@ app.use('/', require('./routes/user.js'));
 app.use('/', require('./routes/loginRegister.js'));
 app.use('/', require('./routes/category.js'));
 
-app.listen(3000);
+app.listen(process.env.PORT || 3000);
