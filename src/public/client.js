@@ -50,3 +50,14 @@ if (postType) {
 		console.log('after:', postBody);
 	});
 }
+
+const dropdownAll = document.getElementById('dropdown-all');
+document.addEventListener('click', function(event) {
+	const dropdownContent = document.getElementById('dropdown-content');
+	if (dropdownAll.contains(event.target)) {
+		console.log('clicked');
+		dropdownContent.classList.remove('hidden');
+	} else {
+		dropdownContent.classList.add('hidden');
+	}
+});

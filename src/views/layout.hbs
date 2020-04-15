@@ -1,23 +1,61 @@
 <!DOCTYPE html>
 <head>
 	<title>Reddit Clone</title>
-	<link rel="stylesheet" type="text/css" href="/main.css">
+	<link rel="stylesheet" type="text/css" href="styles.css">
+	<link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
-		<header>reddit clone</header>
-		{{#if username}}
-			Logged in as {{username}}
-		{{/if}}
-		<nav>
-			<a href='/'> all </a> | 
-			{{#each categories}}
-				<a href='/c/{{name}}'> {{name}} </a> | 
-			{{/each}}
-		</nav>
+		<div class="flex flex-col">
+			<header class="block fixed w-full bg-gray-300">
 
-		{{> errorPartial}}
+				<!-- brand logo -->
+				<button>
+					<a class="" href="/">reddit clone</a>
+				</button>
 
-		{{{body}}}
+				<!-- dropdown -->
+				<div id="dropdown" class="inline relative">
+					<!-- all -->
+					<button id="dropdown-all" class="border-2 rounded">
+						<span class="text-blue-500 hober:text-blue-800"> Browse by category. </span>
+					</button>
+
+					<!-- rest of categories -->
+					<ul id="dropdown-content" class="hidden absolute left-0 mt-2 w-48 py-2 bg-white rounded-lg shadow-xl">
+						{{#each categories}}
+						<li>
+							<a class="px-4 py-2 text-gray-800 hover:bg-indigo-500 hover:text-white" href='/c/{{name}}'>{{name}}</a>
+						</li>
+						{{/each}}
+					</ul>
+				</div>
+
+				<!-- register -->
+				<button class="btn btn-blue">
+				  <a href="/register"> Register </a>
+				</button>
+
+				<!-- login -->
+				<button class="btn btn-blue p-5">
+				  <a href="/login"> Login </a>
+				</button>
+
+			</header>
+
+
+
+			{{#if username}}
+				Logged in as {{username}}
+			{{/if}}
+
+
+			{{> errorPartial}}
+
+			{{{body}}}
+		</div>
 
 		<script type="text/javascript" src="/client.js"></script>
 </body>
