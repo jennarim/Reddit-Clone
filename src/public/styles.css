@@ -12,12 +12,11 @@ img {
 }
 
 .input-field {
-	@apply bg-white border rounded-lg py-1 px-20;
+	@apply bg-white border rounded-lg py-1 w-full block;
 }
 
 .input-field:focus {
 	@apply shadow-outline;
-	@apply block;
 }
 
 .btn {

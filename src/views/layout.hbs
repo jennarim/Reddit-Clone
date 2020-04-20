@@ -38,24 +38,24 @@
 				{{#if username}}
 				<div>
 					<!-- Username -->
-					<button class="hover:text-blue-800">
+					<button class="hover:text-blue-300">
 					  <a href="/u/{{username}}"> {{username}} </a>
 					</button>
 
 					<!-- logout -->
-					<button class="p-5 hover:text-blue-800">
+					<button class="p-5 hover:text-blue-300">
 					  <a href="/logout"> Logout </a>
 					</button>
 				</div>
 				{{else}}
 				<div>
 					<!-- register -->
-					<button class="hover:text-white">
+					<button class="hover:text-blue-300">
 					  <a href="/register"> Register </a>
 					</button>
 
 					<!-- login -->
-					<button class="p-5 hover:text-white">
+					<button class="p-5 hover:text-blue-300">
 					  <a href="/login"> Login </a>
 					</button>
 				</div>
@@ -64,7 +64,7 @@
 
 			{{> errorPartial}}
 
-			<div class="flex flex-col mt-24">
+			<div class="flex flex-col mt-20">
 				{{{body}}}
 			</div>
 		</div>

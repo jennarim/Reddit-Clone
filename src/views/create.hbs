@@ -1,15 +1,40 @@
-<form id="create" class="validate" method="POST" action="/create">
-	Category: <select name="category">
-		{{#each categories}}
-			<option value="{{_id}}">{{name}}</option>
-		{{/each}}
-	</select>
-	Title: <input type="text" name="title" value="{{err.errors.name.value}}" minLength='1' maxLength='200' required>
-	Type of Post: <select id="post-type" name="type">
-		<option value="text">text</option>
-		<option value="image">image</option>
-	</select>
-	<input id="post-body" type="text" name="body" value="{{err.errors.name.value}}" minLength='1' maxLength='1000' placeholder="Enter post content here" required>
-	<!-- input type changes to url based on select -->
-	<input type="submit">
-</form>
+
+<div class="flex h-32">
+	<div class="p-2 m-auto bg-gray-100 rounded-lg w-1/2">
+		<form id="create" class="validate" method="POST" action="/create">
+			<ul>
+				<li>
+					<span class="font-bold"> Category </span>
+				</li>
+				<li>
+					<select name="category" class="block">
+					{{#each categories}}
+						<option value="{{_id}}">{{name}}</option>
+					{{/each}}
+					</select>
+				</li>
+				<li>
+					<span class="font-bold"> Type of Post </span>
+				</li>
+				<li>
+					<select id="post-type" name="type">
+					<option value="text">text</option>
+					<option value="image">image</option>
+					</select>
+				</li>
+				<li>
+					<input type="text" name="title" value="{{err.errors.name.value}}" placeholder="Enter post title here" minLength='1' maxLength='200' class="input-field" style="300px" required>
+				</li>
+				
+				<li>
+				<textarea id="post-body" type="text" name="body" value="{{err.errors.name.value}}" minLength='1' maxLength='1000' placeholder="Enter post content here" cols="50" class="input-field h-32" required>
+				</textarea>
+				</li>
+				<!-- input type changes to url based on select -->
+				<li>
+					<input type="btn btn-blue submit">
+				</li>
+			<ul>
+		</form>
+	</div>
+</div>
