@@ -1,8 +1,24 @@
-<h2> Register </h2>
-
-<form class="validate" method="POST" action="">
-	username: <input type="text" name="username" pattern="([A-Za-z0-9])+\w" minlength='3' maxlength='30' required>
-	password: <input type="text" name="password" minlength='3' maxlength='30' required>
-	password confirmation: <input type="text" name="passwordConfirmation" >
-	<input type="submit">
-</form>
+<div class="flex h-32">
+	<div class="p-2 m-auto bg-gray-100 rounded-lg w-1/2">
+		<h2 class="text-xl block font-bold"> Register </h2>
+		<form class="validate" method="POST" action="">
+			<ul class="p-2">
+				<li>
+					Username 
+					<input class="input-field" type="text" name="username" pattern="([A-Za-z0-9])+\w" minlength='3' maxlength='30' required>
+				</li>
+				<li>
+					Password 
+					<input class="input-field" type="password" name="password" minlength='3' maxlength='30' required>
+				</li>
+				<li>
+					Confirm Password
+					<input class="input-field" type="password" name="passwordConfirmation">
+				</li>
+				<li>
+					<br><input class="btn btn-blue" type="submit" value="Register">
+				</li>
+			</ul>
+		</form>
+	</div>
+</div>

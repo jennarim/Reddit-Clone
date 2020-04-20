@@ -13955,6 +13955,21 @@ img {
   max-width: 200px;
 }
 
+.input-field {
+  background-color: #fff;
+  border-width: 1px;
+  border-radius: 0.5rem;
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+  padding-left: 5rem;
+  padding-right: 5rem;
+}
+
+.input-field:focus {
+  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5);
+  display: block;
+}
+
 .btn {
   font-weight: 700;
   padding-top: 0.5rem;
