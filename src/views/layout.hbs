@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <head>
 	<title>Reddit Clone</title>
-	<link rel="stylesheet" type="text/css" href="output.css">
+	<link rel="stylesheet" type="text/css" href="/output.css">
 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -19,7 +19,7 @@
 					<div id="dropdown" class="inline relative">
 						<!-- Browse by category -->
 						<button id="dropdown-all" class="rounded">
-							<span class="text-blue-500 hover:text-blue-800"> Browse by category. </span>
+							<span class="text-blue-500 hover:text-blue-800"> Browse by category </span>
 						</button>
 
 						<!-- rest of categories -->
@@ -38,12 +38,12 @@
 				{{#if username}}
 				<div>
 					<!-- Username -->
-					<button class="hover:text-white">
+					<button class="hover:text-blue-800">
 					  <a href="/u/{{username}}"> {{username}} </a>
 					</button>
 
 					<!-- logout -->
-					<button class="p-5 hover:text-white">
+					<button class="p-5 hover:text-blue-800">
 					  <a href="/logout"> Logout </a>
 					</button>
 				</div>
