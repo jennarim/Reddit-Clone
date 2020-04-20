@@ -3,12 +3,12 @@
 const allTextInput = document.querySelectorAll('.validate input[type="text"]');
 
 allTextInput.forEach(input => {
-	input.addEventListener('input', () => {
+	input.addEventListener('input', function () {
 		input.setCustomValidity('');
 		input.checkValidity();
 	});
 
-	input.addEventListener('invalid', (event) => {
+	input.addEventListener('invalid', function (event) {
 		const field = event.target;
 		const validityState = field.validity;
 
@@ -38,7 +38,7 @@ allTextInput.forEach(input => {
 const postType = document.querySelector('#post-type');
 if (postType) {
 	const postBody = document.querySelector('#post-body');
-	postType.addEventListener('change', (event) => {
+	postType.addEventListener('change', function (event) {
 		console.log('before:', postBody);
 		if (postType.value === 'text') {
 			postBody.type = 'text';
@@ -61,3 +61,13 @@ document.addEventListener('click', function(event) {
 		dropdownContent.classList.add('hidden');
 	}
 });
+
+const categoryRequestForm = document.querySelector('#categoryRequestForm');
+if (categoryRequestForm) {
+	categoryRequestForm.addEventListener('submit', function (event) {
+		event.preventDefault();
+		console.log(categoryRequestForm.childNodes[1]);
+		const suggestion = categoryRequestForm.childNodes[0].value;
+		categoryRequestForm.innerHTML = "Thank you for suggestion!";
+	});
+}

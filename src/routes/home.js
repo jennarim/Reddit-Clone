@@ -18,10 +18,13 @@ router.get('/', (req, res) => {
 				res.send('error');
 			} else {
 				posts.sort(helper.comparePostsByDate).reverse();
-				helper.log("Posts", posts);
 				res.render('all', {posts});
 			}
 	});
+});
+
+router.get('/request', (req, res) => {
+	res.render('request');
 });
 
 module.exports = router;
