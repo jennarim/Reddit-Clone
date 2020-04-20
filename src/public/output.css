@@ -13950,6 +13950,11 @@ body {
   background-color: #cbd5e0;
 }
 
+img {
+  width: 100%;
+  max-width: 200px;
+}
+
 .btn {
   font-weight: 700;
   padding-top: 0.5rem;

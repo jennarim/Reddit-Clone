@@ -1,19 +1,17 @@
-<div class="border-2 rounded m-5">
-	<h1 class="font-bold underline">
+<div class="rounded-lg m-5 p-2 bg-gray-100">
+	<h1 class="font-bold underline text-lg">
 		<a href='/c/{{category.name}}/{{slug}}'>{{title}}</a>
 	</h1>
-	<a href='/c/{{category.name}}' class="font-semibold underline">c/{{category.name}}</a>
-	<span class="text-gray-500 underline"> 
+	<a href='/c/{{category.name}}' class="text-sm font-semibold underline">c/{{category.name}}</a>
+	<span class="text-gray-500 text-sm"> 
 		Posted by 
-		<a href='/u/{{author.username}}'> u/{{author.username}} </a>
+		<a href='/u/{{author.username}}' class='underline'> u/{{author.username}}</a>
 	</span>
-	<span class="text-gray-500"> on {{toDateString createdAt}} </span>
+	<span class="text-gray-500 text-sm"> on {{toDateString createdAt}} </span>
 	
-	
-
 	{{#if (isText this)}}
-	<p>{{body}}</p>
+		<p>{{body}}</p>
 	{{else}}
-	<img src="{{body}}" height="200px">
+		<img src="{{body}}" height="100px">
 	{{/if}}
 </div>
