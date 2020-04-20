@@ -24,6 +24,9 @@ hbs.registerPartial('errorPartial', fs.readFileSync(path.join(__dirname, 'views/
 hbs.registerHelper('isText', (post) => {
 	return post.type === 'text';
 });
+hbs.registerHelper('toDateString', (dateObj) => {
+	return dateObj.toDateString();
+});
 
 const Category = mongoose.model('Category');
 const Post = mongoose.model('Post');

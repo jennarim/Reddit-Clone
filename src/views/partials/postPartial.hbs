@@ -1,8 +1,15 @@
-<div class="post">
-	<h1><a href='/c/{{category.name}}/{{slug}}'>{{title}}</a></h1>
-	<h3> Created at: {{createdAt}} </h3>
-	<a href='/c/{{category.name}}'>c/{{category.name}}</a>
-	<a style="display:block" href='/u/{{author.username}}'> u/{{author.username}} </a>
+<div class="border-2 rounded m-5">
+	<h1 class="font-bold underline">
+		<a href='/c/{{category.name}}/{{slug}}'>{{title}}</a>
+	</h1>
+	<a href='/c/{{category.name}}' class="font-semibold underline">c/{{category.name}}</a>
+	<span class="text-gray-500 underline"> 
+		Posted by 
+		<a href='/u/{{author.username}}'> u/{{author.username}} </a>
+	</span>
+	<span class="text-gray-500"> on {{toDateString createdAt}} </span>
+	
+	
 
 	{{#if (isText this)}}
 	<p>{{body}}</p>
