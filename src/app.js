@@ -22,11 +22,27 @@ const sessionOptions = {
 hbs.registerPartial('postPartial', fs.readFileSync(path.join(__dirname, 'views/partials/postPartial.hbs'), 'utf8'));
 hbs.registerPartial('errorPartial', fs.readFileSync(path.join(__dirname, 'views/partials/errorPartial.hbs'), 'utf8'));
 hbs.registerPartial('createPartial', fs.readFileSync(path.join(__dirname, 'views/partials/createPartial.hbs'), 'utf8'));
+hbs.registerHelper('valOf', (obj) => {
+	console.log('####################');
+	console.log(obj);
+});
 hbs.registerHelper('isText', (post) => {
 	return post.type === 'text';
 });
 hbs.registerHelper('toDateString', (dateObj) => {
 	return dateObj.toDateString();
+});
+hbs.registerHelper('calcScore', (post) => {
+	return post.upvotedUsers.length - post.downvotedUsers.length;
+});
+hbs.registerHelper('userUpvoted', (userId, post) => {
+	const res = post.upvotedUsers.includes(userId);
+	if (res) {
+		console.log('user upvoted ', post.title);	
+	} else {
+		console.log('user did not upvoted ', post.title);
+	}
+	return res;
 });
 
 const Category = mongoose.model('Category');
@@ -46,6 +62,7 @@ function handleError(err) {
 // Make username available to templates
 app.use((req, res, next) => {
 	if (req.user) {
+		res.locals.userId = req.user._id;
 		res.locals.username = req.user.username;
 	} else {
 		res.locals.username = undefined;
@@ -71,5 +88,6 @@ app.use('/', require('./routes/create.js'));
 app.use('/', require('./routes/user.js'));
 app.use('/', require('./routes/loginRegister.js'));
 app.use('/', require('./routes/category.js'));
+app.use('/', require('./routes/score.js'));
 
 app.listen(process.env.PORT || 3000);

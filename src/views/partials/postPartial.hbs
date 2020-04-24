@@ -1,17 +1,41 @@
-<div class="rounded-lg mx-4 my-3 p-2 bg-gray-100 max-w-3xl">
-	<h1 class="font-bold underline text-lg">
-		<a href='/c/{{category.name}}/{{slug}}'>{{title}}</a>
-	</h1>
-	<a href='/c/{{category.name}}' class="text-sm font-semibold underline">c/{{category.name}}</a>
-	<span class="text-gray-500 text-sm"> 
-		Posted by 
-		<a href='/u/{{author.username}}' class='underline'> u/{{author.username}}</a>
-	</span>
-	<span class="text-gray-500 text-sm"> on {{toDateString createdAt}} </span>
-	
-	{{#if (isText this)}}
-		<p>{{body}}</p>
-	{{else}}
-		<img src="{{body}}" class=>
-	{{/if}}
+<div class="flex rounded-lg mx-4 my-3 p-2 bg-gray-100 max-w-3xl">
+	<div>
+		{{#if (userUpvoted @root.userId this)}}
+		<button id="upvote" class="block px-2 mx-2 bg-red" data-upvoted>
+			<input id="objId" type="hidden" value="{{_id}}">
+			^
+		</button>
+		{{else}}
+		<button id="upvote" class="block px-2 mx-2 bg-red">
+			<input id="objId" type="hidden" value="{{_id}}">
+			^
+		</button>
+		{{/if}}
+
+		<div id="score" class="inline-block bg-white px-2 mx-2 rounded-lg">
+			{{calcScore this}}
+		</div>
+		<button id="downvote" class="block px-2 mx-2 bg-red">
+			v
+		</button>
+	</div>
+
+
+	<div class="flex-auto inline">
+		<h1 class="font-bold underline text-lg">
+			<a href='/c/{{category.name}}/{{slug}}'>{{title}}</a>
+		</h1>
+		<a href='/c/{{category.name}}' class="text-sm font-semibold underline">c/{{category.name}}</a>
+		<span class="text-gray-500 text-sm"> 
+			Posted by 
+			<a href='/u/{{author.username}}' class='underline'> u/{{author.username}}</a>
+		</span>
+		<span class="text-gray-500 text-sm"> on {{toDateString createdAt}} </span>
+		
+		{{#if (isText this)}}
+			<p>{{body}}</p>
+		{{else}}
+			<img src="{{body}}" class=>
+		{{/if}}
+	</div>
 </div>

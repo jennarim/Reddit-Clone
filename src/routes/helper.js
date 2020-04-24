@@ -2,7 +2,7 @@ function ensureLoggedIn(req, res, next) {
 	if (req.user) {
 		next();
 	} else {
-		res.redirect('/register');
+		res.redirect(302, '/register');
 	}
 }
 
