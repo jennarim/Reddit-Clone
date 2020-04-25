@@ -32,18 +32,27 @@ hbs.registerHelper('isText', (post) => {
 hbs.registerHelper('toDateString', (dateObj) => {
 	return dateObj.toDateString();
 });
-hbs.registerHelper('calcScore', (post) => {
-	return post.upvotedUsers.length - post.downvotedUsers.length;
+hbs.registerHelper('getScore', (post) => {
+	return post.score;
 });
-hbs.registerHelper('userUpvoted', (userId, post) => {
-	const res = post.upvotedUsers.includes(userId);
-	if (res) {
-		console.log('user upvoted ', post.title);	
-	} else {
-		console.log('user did not upvoted ', post.title);
-	}
-	return res;
-});
+// hbs.registerHelper('userUpvoted', (userId, post) => {
+// 	const res = post.upvotedUsers.includes(userId);
+// 	if (res) {
+// 		console.log('user upvoted ', post.title);	
+// 	} else {
+// 		console.log('user did not upvoted ', post.title);
+// 	}
+// 	return res;
+// });
+// hbs.registerHelper('userDownvoted', (userId, post) => {
+// 	const res = post.downvotedUsers.includes(userId);
+// 	if (res) {
+// 		console.log('user downvoted ', post.title);	
+// 	} else {
+// 		console.log('user did not downvoted ', post.title);
+// 	}
+// 	return res;
+// });
 
 const Category = mongoose.model('Category');
 const Post = mongoose.model('Post');

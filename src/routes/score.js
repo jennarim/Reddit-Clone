@@ -12,47 +12,190 @@ router.use(express.urlencoded({extended: false}));
 
 router.post('/upvote', (req, res) => {
 	if (!req.user) {
-		res.status(302).send();
+		res.status(300).json({success:false});
 	} else {
-	 	Post.findOne({_id: req.body.postId}, (err, post) => {
-	 		if (err) {
-	 			res.status(500).send();
-	 		} else {
-	 			const userWantsToUpvote = req.body.upvoted;
-	 			if (userWantsToUpvote === 'true') {
-	 				console.log('~ user wants to upvote', post.title);
-	 				const userAlreadyIncluded = post.upvotedUsers.includes(req.body.postId);
-	 				if (userAlreadyIncluded) {
-	 					console.log('~~ she already did though', post.title);
-	 					res.status(400).send();
-	 				} else {
-	 					console.log('~ success!!', post.title);
-	 					post.upvotedUsers.addToSet(req.user._id);
-	 					post.save();
-	 					res.status(200).send();
-	 				}
-	 			} else {
-	 				// User wants to revoke upvote
-	 				console.log('~ user wants to revoke', post.title);
-	 				Post.updateOne({_id: req.body.postId}, {$pull: {upvotedUsers: req.user._id}}, (err, post) => {
-	 					if (err) {
-	 						res.status(500).send();
-	 					} else {
-	 						console.log('~ success!!');
-	 						res.status(200).send();
-	 					}
-	 				});
-	 			}
-	 		}
-	 	});
+		const postId = req.body.postId;
+		User.findOne({_id: req.user._id}, (err, user) => {
+			if (err) {
+				console.log(err);
+				res.status(500).send({success:false});
+			} else {
+				// Remove the post that the user already voted on				
+				const indexOfDuplicateVote = user.votedPosts.findIndex(votedPost => (votedPost.postId+'') === (postId+''));
+				const userAlreadyVoted = indexOfDuplicateVote != -1;
+				if (userAlreadyVoted) {
+					const onDifferentPost = user.votedPosts[indexOfDuplicateVote].vote === -1; 
+					if (onDifferentPost) {
+						for (const votedPostIndex in user.votedPosts) {
+							const votedPost = user.votedPosts[votedPostIndex];
+							if ((votedPost.postId+'') === (postId+'')) {
+								// First update the post's total score
+								Post.updateOne({_id: postId}, {$inc: {score: 1}}, {new: true}, (err) => {
+									if (err) {
+										console.log(err);
+										res.status(500).send({success:false});
+									} else {
+										// Then delete from user's votedPosts
+										user.votedPosts.splice(votedPostIndex, 1);
+										user.save((err) => {
+											if (err) {
+												console.log(err);
+												res.status(500).send({success:false});
+											} else {
+												const votedPost = {postId: postId, vote: 1};
+												// Update user's votedPosts
+												User.updateOne({_id: req.user._id}, {$addToSet: {votedPosts: votedPost}}, (err, count) => {
+													if (err) {
+														console.log(err);
+														res.status(500).send({success:false});
+													} else {
+														const postAdded = count.nModified > 0;
+														if (postAdded) {
+															// Update post's total score
+															Post.findOneAndUpdate({_id: postId}, {$inc: {score: 1}}, {new: true}, (err, post) => {
+																if (err) {
+																	console.log(err);
+																	res.status(500).send({success:false});
+																} else {
+																	res.json({success:true, score: post.score});
+																}
+															});
+														} else {
+															console.log('user already upvoted. this request didnt do anything.');
+														}
+													}
+												});
+											}
+										});
+									}
+								});
+							}
+						}
+					}
+				} else {
+					const votedPost = {postId: postId, vote: 1};
+					// Update user's votedPosts
+					User.updateOne({_id: req.user._id}, {$addToSet: {votedPosts: votedPost}}, (err, count) => {
+						if (err) {
+							console.log(err);
+							res.status(500).send({success:false});
+						} else {
+							const postAdded = count.nModified > 0;
+							if (postAdded) {
+								// Update post's total score
+								Post.findOneAndUpdate({_id: postId}, {$inc: {score: 1}}, {new: true}, (err, post) => {
+									if (err) {
+										console.log(err);
+										res.status(500).send({success:false});
+									} else {
+										res.json({success:true, score: post.score});
+									}
+								});
+							} else {
+								console.log('user already upvoted. this request didnt do anything.');
+							}
+						}
+					});
+				}
+			}
+		});
 	}
-	// check if user is logged in
-	// update post by insert user 
-	// if err
-		// send 500?
-	// else
-		// send 200?
 });
 
+router.post('/downvote', (req, res) => {
+	if (!req.user) { 
+		res.status(300).json({success:false});
+	} else {
+		const postId = req.body.postId;
+		User.findOne({_id: req.user._id}, (err, user) => {
+			if (err) {
+				console.log(err);
+				res.status(500).send({success:false});
+			} else {
+				// Remove the post that the user already voted on				
+				const indexOfDuplicateVote = user.votedPosts.findIndex(votedPost => (votedPost.postId+'') === (postId+''));
+				const userAlreadyVoted = indexOfDuplicateVote !== -1;
+				if (userAlreadyVoted) {
+					const onDifferentPost = user.votedPosts[indexOfDuplicateVote].vote === 1; 
+					if (onDifferentPost) {
+						console.log('user upvoted previously');
+						for (const votedPostIndex in user.votedPosts) {
+							const votedPost = user.votedPosts[votedPostIndex];
+							if ((votedPost.postId+'') === (postId+'')) {
+								// First update the post's total score
+								Post.updateOne({_id: postId}, {$inc: {score: -1}}, {new: true}, (err) => {
+									if (err) {
+										console.log(err);
+										res.status(500).send({success:false});
+									} else {
+										console.log("before (should have st)", user.votedPosts);
+										// Then delete from user's votedPosts
+										user.votedPosts.splice(votedPostIndex, 1);
+										user.save((err) => {
+											if (err) {
+												console.log(err);
+												res.status(500).send({success:false});
+											} else {
+												console.log("after (should have nothing)", user.votedPosts);
+												// *
+												const votedPost = {postId: postId, vote: -1};
+												User.updateOne({_id: req.user._id}, {$addToSet: {votedPosts: votedPost}}, (err, count) => {
+													if (err) {
+														console.log(err);
+														res.status(500).send({success:false});
+													} else {
+														const postAdded = count.nModified > 0;
+														if (postAdded) {
+															console.log("there was no duplicate. successful addition");
+															Post.findOneAndUpdate({_id: postId}, {$inc: {score: -1}}, {new: true}, (err, post) => {
+																if (err) {
+																	console.log(err);
+																	res.status(500).send({success:false});
+																} else {
+																	res.json({success:true, score: post.score});
+																}
+															});
+														} else {
+															console.log('user already downvoted. this request didnt do anything.');
+														}
+													}
+												});
+
+
+											}
+										});
+									}
+								});
+							}
+						}
+					}
+				} else {
+					const votedPost = {postId: postId, vote: -1};
+					User.updateOne({_id: req.user._id}, {$addToSet: {votedPosts: votedPost}}, (err, count) => {
+						if (err) {
+							console.log(err);
+							res.status(500).send({success:false});
+						} else {
+							const postAdded = count.nModified > 0;
+							if (postAdded) {
+								console.log("there was no duplicate. successful addition");
+								Post.findOneAndUpdate({_id: postId}, {$inc: {score: -1}}, {new: true}, (err, post) => {
+									if (err) {
+										console.log(err);
+										res.status(500).send({success:false});
+									} else {
+										res.json({success:true, score: post.score});
+									}
+								});
+							} else {
+								console.log('user already downvoted. this request didnt do anything.');
+							}
+						}
+					});
+				}
+			}
+		});
+	}
+});
 
 module.exports = router;

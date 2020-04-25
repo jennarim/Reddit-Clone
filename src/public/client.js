@@ -72,53 +72,62 @@ if (categoryRequestForm) {
 	});
 }
 
-const upvoteButtons = document.querySelectorAll('#upvote'); 
-if (upvoteButtons) {
-	for (const btn of upvoteButtons) {
-		if (btn.hasAttribute('data-upvoted')) {
-			btn.classList.add('text-red-600');
-		} else {
-			btn.classList.remove('text-red-600');
-		}
-		btn.addEventListener('click', function (event) {
-			// Indicate whether user upvoted
-			btn.toggleAttribute('data-upvoted');
-
-			// Change style accordingly
-			btn.classList.toggle('text-red-600');
-
-			const postId = btn.querySelector('#objId').value;
-			console.log('clicked', postId);
-			event.preventDefault();
-
-			// Update post's list of upvoted users (either to add or remove current user)
-			const xhr = new XMLHttpRequest();
-			xhr.open('POST', '/upvote');
-			xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
-			xhr.addEventListener('load', function() {
-				if (xhr.status === 302) {
-					window.location = '/register';
-				} else if (xhr.status >= 200 && xhr.status < 400) {
-					const scoreElem = btn.parentElement.querySelector('#score');
-					const origScore = parseInt(scoreElem.textContent.trim());
-					let newScore;
-					console.log(btn.hasAttribute('data-upvoted'));
-					if (btn.hasAttribute('data-upvoted')) {
-						console.log("upvote increased!");
-						newScore = origScore+1;
-					} else {
-						// User revoked upvote
-						console.log("upvote revoked!");
-						newScore = origScore-1;
-					}
-					scoreElem.textContent = newScore;
-				}
-			});
-			xhr.addEventListener('error', function(error) {
-				console.log('there was an error');
-				console.log(error);
-			});
-			xhr.send(`postId=${postId}&upvoted=${btn.hasAttribute('data-upvoted')}`);
-		});
+const posts = document.querySelectorAll('#post');
+if (posts) {
+	for (const post of posts) {
+		const upvoteBtn = post.querySelector('#upvote');
+		const downvoteBtn = post.querySelector('#downvote');
+		upvoteBtn.addEventListener('click', handleUpvoteClick);
+		downvoteBtn.addEventListener('click', handleDownvoteClick);
 	}
 }
+
+function handleUpvoteClick(event) {
+	event.preventDefault();
+	console.log('upvote clicked');
+
+	/* Update UI */
+	// Update color of button
+	// Update score
+
+	const xhr = new XMLHttpRequest();
+	xhr.open('POST', '/upvote');
+	xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
+	xhr.addEventListener('load', function() {
+		if (xhr.status >= 300 && xhr.status < 400) {
+			window.location = '/register';
+		} else if (xhr.status >= 200 && xhr.status < 300) {
+			console.log(JSON.parse(xhr.responseText));
+			const newScore = JSON.parse(xhr.responseText).score;
+			const score = event.target.parentElement.querySelector('#score');
+			score.textContent = newScore;
+		}
+	});
+	xhr.addEventListener('error', function(error) {
+		console.log(error);
+	});
+	xhr.send(`postId=${this.querySelector('#objId').value}`);
+}
+
+function handleDownvoteClick(event) {
+	event.preventDefault();
+console.log('downvote clicked');
+	const xhr = new XMLHttpRequest();
+	xhr.open('POST', '/downvote');
+	xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
+	xhr.addEventListener('load', function() {
+		if (xhr.status >= 300 && xhr.status < 400) {
+			window.location = '/register';
+		} else if (xhr.status >= 200 && xhr.status < 300) {
+			console.log(JSON.parse(xhr.responseText));
+			const newScore = JSON.parse(xhr.responseText).score;
+			const score = event.target.parentElement.querySelector('#score');
+			score.textContent = newScore;
+		}
+	});
+	xhr.addEventListener('error', function(error) {
+		console.log(error);
+	});
+	xhr.send(`postId=${this.querySelector('#objId').value}`);
+}
+

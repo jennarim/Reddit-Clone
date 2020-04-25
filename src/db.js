@@ -7,20 +7,20 @@ const Schema = mongoose.Schema;
 
 const enumOptions = {values: ['text', 'image'], message:'{VALUE} is not a valid post type.'};
 const postSchema = Schema({
-	category:       {type: Schema.Types.ObjectId, ref: 'Category', required: [true, '{PATH} is required.']},
-	title: 	        {type: String, required: [true, '{PATH} is required.'], minlength: [1, 'Should be more than 1 character'], maxlength: [200, 'Should be less than 200 characters']},
-	type: 	        {type: String, required: [true, '{PATH} is required.'], enum: [enumOptions, 'Value should be either text or img']},
-	body: 	        {type: String, required: [true, '{PATH} is required.'], minlength: [1, 'Should be more than 1 character'], maxlength: [1000, 'Should be less than 1000 characters']},
-	author:         {type: Schema.Types.ObjectId, ref: 'User', required: [true, '{PATH} is required.']},
-	upvotedUsers:   [{type: Schema.Types.ObjectId, ref: 'User'}],
-	downvotedUsers: [{type: Schema.Types.ObjectId, ref: 'User'}],
+	category:  {type: Schema.Types.ObjectId, ref: 'Category', required: [true, '{PATH} is required.']},
+	title: 	   {type: String, required: [true, '{PATH} is required.'], minlength: [1, 'Should be more than 1 character'], maxlength: [200, 'Should be less than 200 characters']},
+	type: 	   {type: String, required: [true, '{PATH} is required.'], enum: [enumOptions, 'Value should be either text or img']},
+	body: 	   {type: String, required: [true, '{PATH} is required.'], minlength: [1, 'Should be more than 1 character'], maxlength: [1000, 'Should be less than 1000 characters']},
+	author:    {type: Schema.Types.ObjectId, ref: 'User', required: [true, '{PATH} is required.']},
+	score:     {type: Number, required: true},
 	createdAt: {type: Date, required: [true, '{PATH} is required.']}
 });
 
 const userSchema = Schema({
-	username: {type: String, required: [true, '{PATH} is required.'], minlength: [3, 'Should be more than 3 character'], maxlength: [30, 'Should be less than 30 characters'], validate: [vr.isAlphanumeric, 'Username must be alphanumeric']},
-	password: {type: String, required: [true, '{PATH} is required.'], minlength: [3, 'Should be more than 3 character'], maxlength: [30, 'Should be less than 30 characters']},
-	posts:    [{type: Schema.ObjectId, ref: 'Post'}]
+	username:   {type: String, required: [true, '{PATH} is required.'], minlength: [3, 'Should be more than 3 character'], maxlength: [30, 'Should be less than 30 characters'], validate: [vr.isAlphanumeric, 'Username must be alphanumeric']},
+	password:   {type: String, required: [true, '{PATH} is required.'], minlength: [3, 'Should be more than 3 character'], maxlength: [30, 'Should be less than 30 characters']},
+	posts:      [{type: Schema.ObjectId, ref: 'Post'}],
+	votedPosts: [{postId: {type: Schema.ObjectId, ref: 'Post'}, vote: {type: Number, min:-1, max:1}, _id: false}] 
 });
 
 const categorySchema = Schema({

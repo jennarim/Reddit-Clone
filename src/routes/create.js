@@ -19,6 +19,7 @@ router.post('/create', helper.ensureLoggedIn, (req, res) => {
 		type: req.body.type,
 		body: req.body.body,
 		author: req.user._id,
+		score: 0,
 		createdAt: new Date()
 	}).save((err, post) => {
 		if (err) {

@@ -1,21 +1,16 @@
-<div class="flex rounded-lg mx-4 my-3 p-2 bg-gray-100 max-w-3xl">
+<div id='post' class="flex rounded-lg mx-4 my-3 p-2 bg-gray-100 max-w-3xl">
 	<div>
-		{{#if (userUpvoted @root.userId this)}}
-		<button id="upvote" class="block px-2 mx-2 bg-red" data-upvoted>
+		<button id="upvote" class="block px-2 mx-2">
 			<input id="objId" type="hidden" value="{{_id}}">
 			^
 		</button>
-		{{else}}
-		<button id="upvote" class="block px-2 mx-2 bg-red">
-			<input id="objId" type="hidden" value="{{_id}}">
-			^
-		</button>
-		{{/if}}
 
 		<div id="score" class="inline-block bg-white px-2 mx-2 rounded-lg">
-			{{calcScore this}}
+			{{getScore this}}
 		</div>
-		<button id="downvote" class="block px-2 mx-2 bg-red">
+	
+		<button id="downvote" class="block px-2 mx-2">
+			<input id="objId" type="hidden" value="{{_id}}">
 			v
 		</button>
 	</div>
