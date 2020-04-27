@@ -97,10 +97,15 @@ function handleUpvoteClick(event) {
 		if (xhr.status >= 300 && xhr.status < 400) {
 			window.location = '/register';
 		} else if (xhr.status >= 200 && xhr.status < 300) {
-			console.log(JSON.parse(xhr.responseText));
-			const newScore = JSON.parse(xhr.responseText).score;
-			const score = event.target.parentElement.querySelector('#score');
-			score.textContent = newScore;
+			console.log('response text', xhr.responseText);
+			const response = JSON.parse(xhr.responseText);
+			if (response.success) {
+				const newScore = JSON.parse(xhr.responseText).score;
+				const score = event.target.parentElement.querySelector('#score');
+				score.textContent = newScore;
+			} else {
+				console.log('failure');
+			}
 		}
 	});
 	xhr.addEventListener('error', function(error) {
@@ -111,7 +116,8 @@ function handleUpvoteClick(event) {
 
 function handleDownvoteClick(event) {
 	event.preventDefault();
-console.log('downvote clicked');
+	console.log('downvote clicked');
+
 	const xhr = new XMLHttpRequest();
 	xhr.open('POST', '/downvote');
 	xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
@@ -119,10 +125,14 @@ console.log('downvote clicked');
 		if (xhr.status >= 300 && xhr.status < 400) {
 			window.location = '/register';
 		} else if (xhr.status >= 200 && xhr.status < 300) {
-			console.log(JSON.parse(xhr.responseText));
-			const newScore = JSON.parse(xhr.responseText).score;
-			const score = event.target.parentElement.querySelector('#score');
-			score.textContent = newScore;
+			const response = JSON.parse(xhr.responseText);
+			if (response.success) {
+				const newScore = JSON.parse(xhr.responseText).score;
+				const score = event.target.parentElement.querySelector('#score');
+				score.textContent = newScore;
+			} else {
+				console.log('failure');
+			}
 		}
 	});
 	xhr.addEventListener('error', function(error) {

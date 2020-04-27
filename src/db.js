@@ -35,6 +35,8 @@ mongoose.model('Post', postSchema);
 mongoose.model('User', userSchema);
 mongoose.model('Category', categorySchema);
 
+mongoose.set('useFindAndModify', false);
+
 let dbconf;
 if (process.env.NODE_ENV === 'PRODUCTION') {
 	const fs = require('fs');
