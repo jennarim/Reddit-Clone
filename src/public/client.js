@@ -82,13 +82,14 @@ if (posts) {
 	}
 }
 
+function vote(url) {
+
+}
+
 function handleUpvoteClick(event) {
+	event.stopPropagation();
 	event.preventDefault();
 	console.log('upvote clicked');
-
-	/* Update UI */
-	// Update color of button
-	// Update score
 
 	const xhr = new XMLHttpRequest();
 	xhr.open('POST', '/upvote');
@@ -103,6 +104,17 @@ function handleUpvoteClick(event) {
 				const newScore = JSON.parse(xhr.responseText).score;
 				const score = event.target.parentElement.querySelector('#score');
 				score.textContent = newScore;
+
+				if (response.setUpvoteUI) {
+				
+				} else {
+			
+				}
+				if (response.setDownvoteUI) {
+		
+				} else {
+					
+				}
 			} else {
 				console.log('failure');
 			}
@@ -125,11 +137,26 @@ function handleDownvoteClick(event) {
 		if (xhr.status >= 300 && xhr.status < 400) {
 			window.location = '/register';
 		} else if (xhr.status >= 200 && xhr.status < 300) {
+			console.log('response text', xhr.responseText);
 			const response = JSON.parse(xhr.responseText);
 			if (response.success) {
 				const newScore = JSON.parse(xhr.responseText).score;
 				const score = event.target.parentElement.querySelector('#score');
+				console.log('parentElement', event.target.parentElement);
 				score.textContent = newScore;
+
+				if (response.setUpvoteUI) {
+					console.log(event.target.querySelector('span'));
+					event.target.querySelector('span').classList.add('text-red-600');
+				} else {
+					console.log(event.target.querySelector('span'));
+					event.target.querySelector('span').classList.remove('text-red-600');
+				}
+				if (response.setDownvoteUI) {
+					event.target.querySelector('span').classList.add('text-blue-600');
+				} else {
+					event.target.querySelector('span').classList.remove('text-red-600');
+				}
 			} else {
 				console.log('failure');
 			}

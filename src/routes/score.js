@@ -35,22 +35,40 @@ function handleVote(req, res, postId, VOTE) {
 					Post.findOneAndUpdate({_id: postId}, {$inc: update}, {new: true}, (err, post) => {
 						if (err) {
 							console.log(err);
-							return res.status(500).send({success:false});
+							res.status(500).send({success:false});
 						} else {
-							// 3. Change this post's vote from to new vote (e.g. from downvote to upvote)
+							// 3. Change this post's vote to new vote (e.g. from downvote to upvote)
 							User.updateOne({_id: req.user._id, 'votedPosts.postId': postId}, {$set: {'votedPosts.$.vote': VOTE}}, (err) => {
 								if (err) {
 									console.log(err);
 									res.status(500).send({success:false});
 								} else {
-									res.json({success: true, score: post.score});
+									const response = {};
+									res.json({success: true, score: post.score, setUpvoteUI: (VOTE === UPVOTE), setDownvoteUI: (VOTE === DOWNVOTE)});
 								}
 							});
 						}
 					});
 				} else {
-					// The user had previously voted the same vote (e.g. user upvoted an already upvoted post). Ignore the request. 
-					res.json({success: false});
+					// The user had previously voted the same vote (e.g. user upvoted an already upvoted post).
+					// 2. Revoke the vote by updating post's score
+					const update = {score: (VOTE === UPVOTE? -1 : 1)};
+					Post.findOneAndUpdate({_id: postId}, {$inc: update}, {new: true}, (err, post) => {
+						if (err) {
+							console.log(err);
+							res.status(500).send({success:false});
+						} else {
+							// 3. Remove this post from user's voted posts
+							User.updateOne({_id: req.user._id}, {$pull: {votedPosts: {postId: postId}}}, (err) => {
+								if (err) {
+									console.log(err);
+									res.status(500).send({success:false});
+								} else {
+									res.json({success: true, score: post.score, setUpvoteUI: false, setDownvoteUI: false});
+								}
+							});
+						}
+					});
 				}
 			} else {
 				// The user had never voted on this post before
@@ -71,7 +89,7 @@ function handleVote(req, res, postId, VOTE) {
 							} else {
 								console.log('this post was added to user votedPosts');
 								console.log('the score is now', post.score);
-								res.json({success:true, score: post.score});
+								res.json({success:true, score: post.score, setUpvoteUI: (VOTE === UPVOTE), setDownvoteUI: (VOTE === DOWNVOTE)});
 							}
 						});
 					}
