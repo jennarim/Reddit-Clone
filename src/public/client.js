@@ -1,4 +1,5 @@
 // https://css-tricks.com/form-validation-part-2-constraint-validation-api-javascript/
+// https://stackoverflow.com/questions/169625/regex-to-check-if-valid-url-that-ends-in-jpg-png-or-gif
 
 const allTextInput = document.querySelectorAll('.validate input[type="text"]');
 
@@ -16,8 +17,9 @@ allTextInput.forEach(input => {
 			input.setCustomValidity('Enter the field.');
 		}
 
-		if (validityState.patternMismatch) {
-			input.setCustomValidity('Alphanumeric only.');	
+		if (validityState.patternMismatch && field.type === 'url') {
+			// ensures link ends with jpeg,jpg,gif,png (doesn't guarantee it's a url)
+			input.setCustomValidity('Link does not lead to an image.');
 		} 
 
 		if (validityState.tooShort) {
@@ -28,8 +30,9 @@ allTextInput.forEach(input => {
 			input.setCustomValidity(`Too short. Should be at most ${field.getAttribute('maxLength')} characters.`);	
 		}
 
-		if (validityState.typeMistmatch && field.type === 'url') {
-			input.setCustomValidity('Please enter a url.');	
+		if (validityState.typeMismatch && field.type === 'url') {
+			// ensures link is a valid url
+			input.setCustomValidity('Please enter a valid url.');	
 		}
 	});
 });
@@ -46,6 +49,7 @@ if (postType) {
 		} else if (postType.value === 'image') {
 			postBody.type = 'url';
 			postBody.placeholder = 'Enter url to image here';
+			postBody.pattern = '^https?://(?:[a-z0-9\-]+\.)+[a-z]{2,6}(?:/[^/#?]+)+\.(?:jpg|gif|png|jpeg)$';
 		}
 		console.log('after:', postBody);
 	});
