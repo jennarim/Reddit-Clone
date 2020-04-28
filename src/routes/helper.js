@@ -17,7 +17,7 @@ function ensureLoggedOut(req, res, next) {
 function comparePostsByDate(a, b) {
 	if (a.createdAt.getTime() < b.createdAt.getTime()) {
 		return -1;
-	} else if  (a.createdAt.getTime() > b.createdAt.getTime()) {
+	} else if (a.createdAt.getTime() > b.createdAt.getTime()) {
 		return 1;
 	} else {
 		return 0;

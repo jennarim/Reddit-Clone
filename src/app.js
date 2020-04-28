@@ -2,14 +2,14 @@ require('./db.js');
 require('./auth.js');
 
 const express = require('express'),
-	  path = require('path'),
-	  mongoose = require('mongoose'),
-	  session = require('express-session'),
-	  hbs = require('hbs'),
-	  fs = require('fs'),
-	  passport = require('passport'),
-	  config = require('./config.json')
-	  helmet = require('helmet');
+      path = require('path'),
+      mongoose = require('mongoose'),
+      session = require('express-session'),
+      hbs = require('hbs'),
+      fs = require('fs'),
+      passport = require('passport'),
+      config = require('./config.json'),
+      helmet = require('helmet');
 
 const app = express();
 const sessionOptions = { 
@@ -37,14 +37,13 @@ hbs.registerHelper('isText', (post) => {
 	return post.type === 'text';
 });
 hbs.registerHelper('toDateString', (dateObj) => {
-	return dateObj.toDateString() + ' ' + dateObj.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })
+	return dateObj.toDateString() + ' ' + dateObj.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true});
 });
 hbs.registerHelper('getScore', (post) => {
 	return post.score;
 });
 
 const Category = mongoose.model('Category');
-const Post = mongoose.model('Post');
 
 // Make username available to templates
 app.use((req, res, next) => {

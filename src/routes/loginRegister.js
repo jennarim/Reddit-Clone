@@ -1,11 +1,9 @@
 const express = require('express'),
-	  passport = require('passport'),
-	  mongoose = require('mongoose'),
-	  helper = require('./helper.js');
+      passport = require('passport'),
+      mongoose = require('mongoose'),
+      helper = require('./helper.js');
 
-const User = mongoose.model('User')
-const Category = mongoose.model('Category');
-const Post = mongoose.model('Post');
+const User = mongoose.model('User');
 
 const router = express.Router();
 
@@ -38,24 +36,23 @@ router.post('/login', (req, res) => {
 
 router.post('/register', (req, res) => {
 	if (req.body.password !== req.body.passwordConfirmation) {
-		res.render('register', {err: {errors: [{message: 'Passwords do not match.'}]}})
+		res.render('register', {err: {errors: [{message: 'Passwords do not match.'}]}});
 	} else {
 		const newUser = new User({username: req.body.username, password: req.body.password});
 		newUser.validate((err) => {
 			if (err) {
 				res.render('register', {err});
 			} else {
-				User.register(newUser,
-					req.body.password, (err, user) => {
-						if (err) {
-							err.errors = [{message: err.message}];
-							console.log(err);
-							res.render('register', {err})
-						} else {
-							passport.authenticate('local')(req, res, () => {
-								res.redirect('/');
-							});
-						}
+				User.register(newUser, req.body.password, (err) => {
+					if (err) {
+						err.errors = [{message: err.message}];
+						console.log(err);
+						res.render('register', {err});
+					} else {
+						passport.authenticate('local')(req, res, () => {
+							res.redirect('/');
+						});
+					}
 				});
 			}
 		});

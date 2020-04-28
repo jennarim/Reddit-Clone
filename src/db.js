@@ -1,7 +1,7 @@
 const mongoose = require('mongoose'),
-	  passportLocalMongoose = require('passport-local-mongoose'),
-	  URLSlugs = require('mongoose-url-slugs'),
-	  vr = require('validator');
+      passportLocalMongoose = require('passport-local-mongoose'),
+      URLSlugs = require('mongoose-url-slugs'),
+      vr = require('validator');
 
 const Schema = mongoose.Schema;
 

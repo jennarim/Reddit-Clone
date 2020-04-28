@@ -1,10 +1,8 @@
 const express = require('express'),
-	  mongoose = require('mongoose'),
-	  helper = require('./helper.js');
+      mongoose = require('mongoose'),
+      helper = require('./helper.js');
 
-const User = mongoose.model('User')
-const Category = mongoose.model('Category');
-const Post = mongoose.model('Post');
+const User = mongoose.model('User');
 
 const router = express.Router();
 

@@ -1,9 +1,7 @@
 const express = require('express'),
-	  mongoose = require('mongoose'),
-	  helper = require('./helper.js');
+      mongoose = require('mongoose');
 
-const User = mongoose.model('User')
-const Category = mongoose.model('Category');
+const User = mongoose.model('User');
 const Post = mongoose.model('Post');
 
 const router = express.Router();
@@ -23,7 +21,7 @@ function handleVote(req, res, postId, VOTE) {
 		} else {
 			// 1. Check if the user already voted on this post			
 			const indexOfDuplicateVote = user.votedPosts.findIndex(votedPost => (votedPost.postId+'') === (postId+'')),
-				  userAlreadyVoted = indexOfDuplicateVote !== -1;
+                  userAlreadyVoted = indexOfDuplicateVote !== -1;
 
 			if (userAlreadyVoted) {
 				// The user already voted on this post (either upvote or downvote)
@@ -43,7 +41,6 @@ function handleVote(req, res, postId, VOTE) {
 									console.log(err);
 									res.status(500).send({success:false});
 								} else {
-									const response = {};
 									res.json({success: true, score: post.score, setUpvoteUI: (VOTE === UPVOTE), setDownvoteUI: (VOTE === DOWNVOTE)});
 								}
 							});

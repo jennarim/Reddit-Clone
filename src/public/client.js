@@ -42,14 +42,14 @@ allTextInput.forEach(input => {
 const postType = document.querySelector('#post-type');
 if (postType) {
 	const postBody = document.querySelector('#post-body');
-	postType.addEventListener('change', function (event) {
+	postType.addEventListener('change', function () {
 		if (postType.value === 'text') {
 			postBody.type = 'text';
 			postBody.placeholder = 'Enter post content here';
 		} else if (postType.value === 'image') {
 			postBody.type = 'url';
 			postBody.placeholder = 'Enter url to image here';
-			postBody.pattern = '^https?://(?:[a-z0-9\-]+\.)+[a-z]{2,6}(?:/[^/#?]+)+\.(?:jpg|gif|png|jpeg)$';
+			postBody.pattern = '^https?://(?:[a-z0-9-]+\.)+[a-z]{2,6}(?:/[^/#?]+)+\.(?:jpg|gif|png|jpeg)$/';
 		}
 	});
 }
@@ -143,7 +143,7 @@ function getHandlerFor(vote) {
 	}
 
 	function handleError() {
-		console.log(error);
+		console.log('error');
 	}
 
 	if (vote === 'upvote') {
@@ -151,13 +151,13 @@ function getHandlerFor(vote) {
 			event.stopPropagation();
 			event.preventDefault();
 			post('/upvote', handleLoad, handleError, `postId=${this.querySelector('#objId').value}`, event);
-		}
+		};
 	} else {
 		return function(event) {
 			event.stopPropagation();
 			event.preventDefault();
 			post('/downvote', handleLoad, handleError, `postId=${this.querySelector('#objId').value}`, event);
-		}
+		};
 	}
 }
 
@@ -170,7 +170,7 @@ function setupInitialVoteUI(postToCompare, upvoteBtn, downvoteBtn) {
 	xhr.addEventListener('load', function() {
 		if (xhr.status >= 200 && xhr.status < 400) {
 			const response = JSON.parse(xhr.responseText),
-				  indexOfPostToCompare = response.findIndex(ele => ele.postId === postToCompareId);
+                  indexOfPostToCompare = response.findIndex(ele => ele.postId === postToCompareId);
 			if (indexOfPostToCompare !== -1) {
 				const post = response[indexOfPostToCompare];
 				switch (post.vote) {
@@ -199,12 +199,12 @@ const posts = document.querySelectorAll('#post');
 if (posts) {
 	for (const post of posts) {
 		const upvoteBtn = post.querySelector('#upvote'),
-			  downvoteBtn = post.querySelector('#downvote');
+              downvoteBtn = post.querySelector('#downvote');
 
 		setupInitialVoteUI(post, upvoteBtn, downvoteBtn);
 
 		const handleUpvoteClick = getHandlerFor('upvote'),
-			  handleDownvoteClick = getHandlerFor('downvote');
+              handleDownvoteClick = getHandlerFor('downvote');
 
 		upvoteBtn.addEventListener('click', handleUpvoteClick);
 		downvoteBtn.addEventListener('click', handleDownvoteClick);
@@ -232,11 +232,11 @@ function handleCommentSubmit(event) {
 		console.log('error');
 	}
 
- 	event.preventDefault();
- 	const commentContent = escapeHtml(this.querySelector('#commentBox').value);
- 	const postTitle = window.location.pathname.split('/')[3];
- 	const bodyStr = `content=${commentContent}&postTitle=${postTitle}`;
- 	post('/comment', handleLoad, handleError, bodyStr, event);
+	event.preventDefault();
+	const commentContent = escapeHtml(this.querySelector('#commentBox').value);
+	const postTitle = window.location.pathname.split('/')[3];
+	const bodyStr = `content=${commentContent}&postTitle=${postTitle}`;
+	post('/comment', handleLoad, handleError, bodyStr, event);
 }
 
 const commentForm = document.querySelector('#commentForm');
