@@ -2,6 +2,7 @@
 // https://stackoverflow.com/questions/169625/regex-to-check-if-valid-url-that-ends-in-jpg-png-or-gif
 // http://shebang.mintern.net/foolproof-html-escaping-in-javascript/
 
+// Add validation on all inputs
 const allTextInput = document.querySelectorAll('.validate input[type="text"]');
 allTextInput.forEach(input => {
 	input.addEventListener('input', function () {
@@ -37,7 +38,7 @@ allTextInput.forEach(input => {
 	});
 });
 
-
+// When creating a new post, change the form elements depending on post type
 const postType = document.querySelector('#post-type');
 if (postType) {
 	const postBody = document.querySelector('#post-body');
@@ -53,6 +54,7 @@ if (postType) {
 	});
 }
 
+// When clicking outside the dropdown, close it (i.e. hide it)
 const dropdownAll = document.getElementById('dropdown-all');
 document.addEventListener('click', function(event) {
 	const dropdownContent = document.getElementById('dropdown-content');
@@ -63,44 +65,32 @@ document.addEventListener('click', function(event) {
 	}
 });
 
+// Safely escapes html to prevent XSS
 function escapeHtml(str) {
 	const div = document.createElement('div');
 	div.appendChild(document.createTextNode(str));
 	return div.innerHTML;
 }
 
+// Displays user's suggestion 
 const categoryRequestForm = document.querySelector('#categoryRequestForm');
 if (categoryRequestForm) {
 	categoryRequestForm.addEventListener('submit', function (event) {
 		event.preventDefault();
-		const suggestion = categoryRequestForm.childNodes[1].value;
-		console.log(escapeHtml(suggestion));
+		const suggestion = escapeHtml(categoryRequestForm.childNodes[1].value);
 		categoryRequestForm.textContent = `You suggested: ${suggestion}. Thank you for suggestion!`;
 	});
 }
 
-const posts = document.querySelectorAll('#post');
-if (posts) {
-	for (const post of posts) {
-		const upvoteBtn = post.querySelector('#upvote');
-		const downvoteBtn = post.querySelector('#downvote');
-		upvoteBtn.addEventListener('click', handleUpvoteClick);
-		downvoteBtn.addEventListener('click', handleDownvoteClick);
-	}
+// Updates score on the DOM based on response text
+function updateScore(btn, text) {
+	const scoreDiv = btn.parentElement.querySelector('#score');
+	const newScore = JSON.parse(text).score;
+	scoreDiv.textContent = newScore;
 }
 
-function post(url, handleLoad, handleError, bodyStr) {
-	const xhr = new XMLHttpRequest();
-	xhr.open('POST', url);
-	xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
-	xhr.addEventListener('load', handleLoad.bind(this, xhr));
-	xhr.addEventListener('error', handleError);
-	xhr.send(bodyStr);
-}
-
+// Adds styling to upvote and downvote buttons depending on user's vote
 function displayUI(response, upvoteBtn, downvoteBtn) {
-	console.log(upvoteBtn);
-	console.log(downvoteBtn);
 	if (response.setUpvoteUI) {
 		upvoteBtn.classList.add('text-red-600');
 		downvoteBtn.classList.remove('text-blue-600');
@@ -115,14 +105,20 @@ function displayUI(response, upvoteBtn, downvoteBtn) {
 	}
 }
 
-function updateScore(btn, parse, text) {
-	const scoreDiv = btn.parentElement.querySelector('#score');
-	const newScore = parse(text).score;
-	scoreDiv.textContent = newScore;
+// AJAX that handles upvotes and downvotes (sends request to server and updates UI)
+function post(url, handleLoad, handleError, bodyStr, event) {
+	const xhr = new XMLHttpRequest();
+	xhr.open('POST', url);
+	xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
+	xhr.addEventListener('load', handleLoad.bind(this, xhr, event));
+	xhr.addEventListener('error', handleError);
+	xhr.send(bodyStr);
 }
 
-function handleUpvoteClick(event) {
-	function handleLoad(xhr) {
+// Gets handler for either upvote button click or downvote button click
+function getHandlerFor(vote) {
+	function handleLoad(xhr, event) {
+		const clickedBtn = event.target;
 		if (xhr.status >= 300 && xhr.status < 400) {
 			window.location = '/register';
 		} else if (xhr.status >= 200 && xhr.status < 300) {
@@ -130,9 +126,15 @@ function handleUpvoteClick(event) {
 			const response = JSON.parse(xhr.responseText);
 
 			if (response.success) {
-				updateScore(event.target, JSON.parse, xhr.responseText);
-				const upvoteBtn = event.target;
-				const downvoteBtn = upvoteBtn.parentElement.querySelector('#downvote');
+				updateScore(clickedBtn, xhr.responseText);
+				let upvoteBtn, downvoteBtn;
+				if (clickedBtn.id === 'upvote') {
+					upvoteBtn = clickedBtn;
+					downvoteBtn = upvoteBtn.parentElement.querySelector('#downvote');
+				} else {
+					downvoteBtn = clickedBtn;
+					upvoteBtn = downvoteBtn.parentElement.querySelector('#upvote');
+				}
 				displayUI(response, upvoteBtn, downvoteBtn);
 			} else {
 				console.log('failure');
@@ -144,41 +146,33 @@ function handleUpvoteClick(event) {
 		console.log(error);
 	}
 
-	event.stopPropagation();
-	event.preventDefault();
-	console.log('upvote clicked');
-
-
-	post('/upvote', handleLoad, handleError, `postId=${this.querySelector('#objId').value}`);
-}
-
-function handleDownvoteClick(event) {
-	function handleLoad(xhr) {
-		if (xhr.status >= 300 && xhr.status < 400) {
-			window.location = '/register';
-		} else if (xhr.status >= 200 && xhr.status < 300) {
-			console.log('response text', xhr.responseText);
-			const response = JSON.parse(xhr.responseText);
-
-			if (response.success) {
-				updateScore(event.target, JSON.parse, xhr.responseText);
-				const downvoteBtn = event.target;
-				const upvoteBtn = downvoteBtn.parentElement.querySelector('#upvote');
-				displayUI(response, upvoteBtn, downvoteBtn);
-			} else {
-				console.log('failure');
-			}
+	if (vote === 'upvote') {
+		return function(event) {
+			event.stopPropagation();
+			event.preventDefault();
+			post('/upvote', handleLoad, handleError, `postId=${this.querySelector('#objId').value}`, event);
+		}
+	} else {
+		return function(event) {
+			event.stopPropagation();
+			event.preventDefault();
+			post('/downvote', handleLoad, handleError, `postId=${this.querySelector('#objId').value}`, event);
 		}
 	}
+}
 
-	function handleError() {
-		console.log(error);
+// Adds click listeners to all up/downvote buttons of every post
+const posts = document.querySelectorAll('#post');
+if (posts) {
+	for (const post of posts) {
+		const upvoteBtn = post.querySelector('#upvote'),
+			  downvoteBtn = post.querySelector('#downvote');
+
+		const handleUpvoteClick = getHandlerFor('upvote'),
+			  handleDownvoteClick = getHandlerFor('downvote');
+
+		upvoteBtn.addEventListener('click', handleUpvoteClick);
+		downvoteBtn.addEventListener('click', handleDownvoteClick);
 	}
-
-	event.stopPropagation();
-	event.preventDefault();
-	console.log('downvote clicked');
-
-	post('/downvote', handleLoad, handleError, `postId=${this.querySelector('#objId').value}`);
 }
 
