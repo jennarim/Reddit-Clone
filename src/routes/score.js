@@ -79,7 +79,6 @@ function handleVote(req, res, postId, VOTE) {
 						console.log(err);
 						res.status(500).send({success:false});
 					} else {
-						console.log('this post has been upvoted, now score is', post.score);
 						// 2. Update user's votedPosts
 						const votedPost = {postId: postId, vote: VOTE};
 						User.findOneAndUpdate({_id: req.user._id}, {$addToSet: {votedPosts: votedPost}}, (err) => {
@@ -87,8 +86,6 @@ function handleVote(req, res, postId, VOTE) {
 								console.log(err);
 								res.status(500).send({success:false});
 							} else {
-								console.log('this post was added to user votedPosts');
-								console.log('the score is now', post.score);
 								res.json({success:true, score: post.score, setUpvoteUI: (VOTE === UPVOTE), setDownvoteUI: (VOTE === DOWNVOTE)});
 							}
 						});
@@ -101,7 +98,7 @@ function handleVote(req, res, postId, VOTE) {
 
 router.post('/upvote', (req, res) => {
 	if (!req.user) {
-		res.status(300).json({success:false});
+		res.status(400).json({success:false});
 	} else {
 		const postId = req.body.postId;
 		handleVote(req, res, postId, UPVOTE);
@@ -110,10 +107,24 @@ router.post('/upvote', (req, res) => {
 
 router.post('/downvote', (req, res) => {
 	if (!req.user) {
-		res.status(300).json({success:false});
+		res.status(400).json({success:false});
 	} else {
 		const postId = req.body.postId;
 		handleVote(req, res, postId, DOWNVOTE);
+	}
+});
+
+router.get('/votedPosts', (req, res) => {
+	if (!req.user) {
+		res.status(400).json({success:false});
+	} else {
+		User.findOne({_id: req.user._id}, (err, user) => {
+			if (err) {
+				res.status(500).json({success:false});
+			} else {
+				res.json(user.votedPosts);
+			}
+		});
 	}
 });
 

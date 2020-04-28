@@ -30,6 +30,7 @@ router.post('/login', (req, res) => {
 				}
 			});
 		} else {
+			const err = {errors: [{message: 'Invalid username and/or password.'}]};
 			res.render('login', {err});
 		}
 	})(req, res);

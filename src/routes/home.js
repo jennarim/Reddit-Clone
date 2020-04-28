@@ -17,6 +17,7 @@ router.get('/', (req, res) => {
 			if (err) {
 				res.send('error');
 			} else {
+				posts = posts.filter(post => post.score >= 1);
 				posts.sort(helper.comparePostsByDate).reverse();
 				res.render('all', {posts});
 			}

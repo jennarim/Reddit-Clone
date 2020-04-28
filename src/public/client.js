@@ -1,7 +1,3 @@
-// https://css-tricks.com/form-validation-part-2-constraint-validation-api-javascript/
-// https://stackoverflow.com/questions/169625/regex-to-check-if-valid-url-that-ends-in-jpg-png-or-gif
-// http://shebang.mintern.net/foolproof-html-escaping-in-javascript/
-
 // Add validation on all inputs
 const allTextInput = document.querySelectorAll('.validate input[type="text"]');
 allTextInput.forEach(input => {
@@ -18,9 +14,13 @@ allTextInput.forEach(input => {
 			input.setCustomValidity('Enter the field.');
 		}
 
-		if (validityState.patternMismatch && field.type === 'url') {
-			// ensures link ends with jpeg,jpg,gif,png (doesn't guarantee it's a url)
-			input.setCustomValidity('Link does not lead to an image.');
+		if (validityState.patternMismatch) {
+			if (field.type === 'url') {
+				// ensures link ends with jpeg,jpg,gif,png (doesn't guarantee it's a url)
+				input.setCustomValidity('Link does not lead to an image. Remove any query strings.');
+			} else if (field.type === 'text') {
+				input.setCustomValidity('Should be alphanumeric.');
+			}
 		} 
 
 		if (validityState.tooShort) {
@@ -161,12 +161,47 @@ function getHandlerFor(vote) {
 	}
 }
 
+// AJAX that adds styling to posts that user upvoted or downvoted
+function setupInitialVoteUI(postToCompare, upvoteBtn, downvoteBtn) {
+	const postToCompareId = postToCompare.querySelector('#objId').value;
+	const xhr = new XMLHttpRequest();
+	xhr.open('GET', `/votedPosts?postId=${postToCompareId}`);
+	const initialUI = {};
+	xhr.addEventListener('load', function() {
+		if (xhr.status >= 200 && xhr.status < 400) {
+			const response = JSON.parse(xhr.responseText),
+				  indexOfPostToCompare = response.findIndex(ele => ele.postId === postToCompareId);
+			if (indexOfPostToCompare !== -1) {
+				const post = response[indexOfPostToCompare];
+				switch (post.vote) {
+					case 1: 
+						initialUI.setUpvoteUI = true;
+						initialUI.setDownvoteUI = false;
+						break;
+					case -1:
+						initialUI.setDownvoteUI = true;
+						initialUI.setUpvoteUI = false;
+						break;
+					default:
+						initialUI.setUpvoteUI = false;
+						initialUI.setDownvoteUI = false;
+						break;
+				}
+				displayUI(initialUI, upvoteBtn, downvoteBtn);
+			}
+		}
+	});
+	xhr.send();
+}
+
 // Adds click listeners to all up/downvote buttons of every post
 const posts = document.querySelectorAll('#post');
 if (posts) {
 	for (const post of posts) {
 		const upvoteBtn = post.querySelector('#upvote'),
 			  downvoteBtn = post.querySelector('#downvote');
+
+		setupInitialVoteUI(post, upvoteBtn, downvoteBtn);
 
 		const handleUpvoteClick = getHandlerFor('upvote'),
 			  handleDownvoteClick = getHandlerFor('downvote');
