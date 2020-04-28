@@ -15,7 +15,7 @@ const app = express();
 const sessionOptions = { 
     secret: config.secret, 
     saveUninitialized: true,
-    cookie: {secure: true, httpOnly: true},
+    cookie: {httpOnly: true},
     resave: true 
 };
 
