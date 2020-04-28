@@ -3,16 +3,17 @@
 ## Overview
 
 <!-- (___TODO__: a brief one or two paragraph, high-level description of your project_) -->
-Reddit Clone is a web app based off of the social news discussion site, Reddit. Visitors of the site can view relevant posts under broad categories such as programming and food. Users can register and login to create their own link/text/photo posts. Users can also access their profile, where they will be able to see the posts they have made. 
-
-Time permitting, comments can be made by users under every post. 
+Reddit Clone is a web app based off of the social news discussion site, Reddit. Visitors of the site can view relevant posts under broad categories such as programming and pictures. Users can register and login to create their own text/image posts. Users can also access their profile, where they will be able to see the posts they have made. In addition to that, users can upvote or downvote posts to express which posts they like or dislike. The most popular posts will be shown on the homepage. On any post, users can also add comments.
 
 ## Data Model
 
 <!-- (___TODO__: a description of your application's data and their relationships to each other_) -->
-The application will store Categories, Users, and Posts.
+The application will store Categories, Users, Posts, and Comments. 
 * Categories can contain multiple Posts (added via user forms)
-* Users can make Posts. 
+* Users can make Posts, stored in 'posts'. 
+* Users can vote on Posts, stored in 'votedPosts'.
+* Users can comment on Posts. 
+* Posts can contain comments, stored in 'comments'.
 
 <!--
 The application will store Categories, Users, Posts and Comments.
@@ -29,8 +30,10 @@ An Example User:
 ```javascript
 {
   username: "freud",
-  hash: // a password hash,
+  password: // password
+  hash: // a password hash
   posts: // an array of references to Post documents
+  votedPosts: // an array of objects, each with a reference to a Post document and a number representing a vote
 }
 ```
 
@@ -42,20 +45,22 @@ An Example Post:
   title: "Benefits to JavaScript?",
   type: // string with value link, text, or img,
   body: // string with value of url, text, or img
-  username: "freud",
+  author: "freud",
+  score: 4, // combined total of upvotes and downvotes
   createdAt: // timestamp
+  comments: // array of references to Comments
 }
 ```
-<!-- comments: // an array of references to Comment documents -->
 
-<!-- An Example Comment: 
+ An Example Comment: 
 ```javascript
 {
-  post: // reference to specific Post document,
-  username: // name of user who made comment,
-  text: // content of comment
-}```
--->
+  content: // content of comment
+  byUser: // name of user who made comment,
+  onPost: // reference to specific Post document,
+  createdAt: // timestamp 
+}
+```
 
 An Example Category with Embedded Posts:
 
@@ -65,8 +70,7 @@ An Example Category with Embedded Posts:
   posts: [
     { category: "programming", title: "Benefits to JavaScript?", type: "text", body: "There are a lot!", username: "freud", createdAt: // timestamp },
     { category: "programming", title: "Video on why I love to code", type: "link", body: "www.youtube.com/why-i-love-to-code", username: "marth", createdAt: // timestamp }
-  ],
-  active: true // is user viewing this category?
+  ]
 }
 ```
 
@@ -134,10 +138,15 @@ Here's a [complex example from wikipedia](https://upload.wikimedia.org/wikipedia
 (___TODO__: write out how your application will be used through [user stories](http://en.wikipedia.org/wiki/User_story#Format) and / or [use cases](https://www.mongodb.com/download-center?jmp=docs&_ga=1.47552679.1838903181.1489282706#previous)_) -->
 
 1. As a non-registered user, I can register a new account.
-2. As a non-registered user, I can view posts of any category.
-3. As a user, I can log in to the site.
-4. As a user, I can view posts of any category.
-5. As a user, I can create posts to be uploaded to any category.
+2. As a registered user, I can log in to the site.
+3. As a registered user, I can create posts to be uploaded to any category.
+4. As a registered user, I can comment on any post.
+5. As a registered user, I can upvote or downvote any post.
+6. As a user, I can view posts of any category.
+7. As a user, I can view any user's page.
+8. As a user, I can view comments.
+9. As a user, I can request a new category.
+
 
 ## Research Topics
 
@@ -145,7 +154,7 @@ Here's a [complex example from wikipedia](https://upload.wikimedia.org/wikipedia
 
 * (5 points) Integrate user authentication
     * Passport - authentication middleware for Node.js for Express-based web apps
-      * will be used to support username + password functionality for the site
+      * used to support username + password functionality for the site
         - specifically using [this module](http://www.passportjs.org/docs/username-password/)
   <!--   * I'm going to be using passport for user authentication
     * And account has been made for testing; I'll email you the password -->
@@ -153,13 +162,10 @@ Here's a [complex example from wikipedia](https://upload.wikimedia.org/wikipedia
     * see <code>cs.nyu.edu/~jversoza/ait-final/login</code> for login page -->
 * (4 points) Perform client side form validation using a JavaScript library
     * [Constraint Validation API](https://developer.mozilla.org/en-US/docs/Web/API/Constraint_validation) - checks for valid form input on client-side before the values are submitted to the server
-      * will be used to ensure that invalid inputs such as empty fields, inclusion of special characters, etc will not be submitted to the server
+      * used to ensure that invalid inputs such as empty fields, inclusion of special characters, etc will not be submitted to the server
 * (2 points) Use a CSS framework throughout your site, use a reasonable of customization of the framework
-    * CSS framework - gives a basic structure 
-    * Possible solutions:
-      * [Bulma](https://bulma.io/) - readable class names, pure CSS (no JS)
-      * [Bootstrap](https://getbootstrap.com/) - low learning curve
-      * [Foundation](https://foundation.zurb.com/) - easily customizable
+    * CSS framework - provides layout and styling of the site
+      * [tailwind.css](https://tailwindcss.com/) 
 
 11 points total out of 8 required points <!--(___TODO__: addtional points will __not__ count for extra credit_)-->
 
@@ -172,6 +178,11 @@ Here's a [complex example from wikipedia](https://upload.wikimedia.org/wikipedia
 
 <!-- (___TODO__: list any tutorials/references/etc. that you've based your code off of_) -->
 
-<!-- 1. [passport.js authentication docs](http://passportjs.org/docs) - (add link to source code that was based on this)
-2. [tutorial on vue.js](https://vuejs.org/v2/guide/) - (add link to source code that was based on this) -->
+1. [passport.js authentication docs](http://passportjs.org/docs) - (add link to source code that was based on this)
+2. [tutorial on vue.js](https://vuejs.org/v2/guide/) - (add link to source code that was based on this)
+
+1. [Form Validation](https://css-tricks.com/form-validation-part-2-constraint-validation-api-javascript/)
+2. [Regex to determine if link is image url](https://stackoverflow.com/questions/169625/regex-to-check-if-valid-url-that-ends-in-jpg-png-or-gif)
+3. [HTML Escaping to ensure user input is not displayed unescaped](http://shebang.mintern.net/foolproof-html-escaping-in-javascript/)
+4. [Professor Versoza's slides on Passport Authentication](https://cs.nyu.edu/courses/fall19/CSCI-UA.0480-001/_site/slides/16/auth.html#/)
 
