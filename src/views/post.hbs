@@ -1,1 +1,15 @@
 {{> postPartial}}
+<div>
+	{{#each comments}}
+		{{> commentPartial}}
+	{{/each}}
+</div>
+
+<div class="rounded-lg mx-4 my-3 p-2 bg-gray-100 max-w-3xl">
+	<form id="commentForm" class="validate" method="" action="/">
+		Leave a comment
+		<textarea id="commentBox" class="w-full border-2 rounded" value="{{err.errors.name.value}}" minLength='1' maxLength='200' placeholder="Type your comment..." required></textarea>
+	
+		<input id="commentSubmit" type="submit" class="btn btn-blue">
+	</form>
+</div>

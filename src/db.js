@@ -13,7 +13,8 @@ const postSchema = Schema({
 	body: 	   {type: String, required: [true, '{PATH} is required.'], minlength: [1, 'Should be more than 1 character'], maxlength: [1000, 'Should be less than 1000 characters']},
 	author:    {type: Schema.Types.ObjectId, ref: 'User', required: [true, '{PATH} is required.']},
 	score:     {type: Number, required: true},
-	createdAt: {type: Date, required: [true, '{PATH} is required.']}
+	createdAt: {type: Date, required: [true, '{PATH} is required.']},
+	comments:  [{type: Schema.ObjectId, ref: 'Comment'}]
 });
 
 const userSchema = Schema({
@@ -28,12 +29,20 @@ const categorySchema = Schema({
 	posts: [{type: Schema.ObjectId, ref: 'Post'}]
 });
 
+const commentSchema = Schema({
+	content:   {type: String, required: [true, '{PATH} is required.'], minlength: [1, 'Should be more than 1 character'], maxlength: [1000, 'Should be less than 1000 characters']},
+	byUser:    {type: Schema.ObjectId, ref: 'User'},
+	onPost:    {type: Schema.ObjectId, ref: 'Post'},
+	createdAt: {type: Date, required: [true, '{PATH} is required.']}
+});
+
 userSchema.plugin(passportLocalMongoose);
 postSchema.plugin(URLSlugs('title'));
 
 mongoose.model('Post', postSchema);
 mongoose.model('User', userSchema);
 mongoose.model('Category', categorySchema);
+mongoose.model('Comment', commentSchema);
 
 mongoose.set('useFindAndModify', false);
 

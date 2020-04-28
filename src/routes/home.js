@@ -18,7 +18,7 @@ router.get('/', (req, res) => {
 				res.send('error');
 			} else {
 				posts = posts.filter(post => post.score >= 1);
-				posts.sort(helper.comparePostsByDate).reverse();
+				posts.sort(helper.comparePostsByScore).reverse();
 				res.render('all', {posts});
 			}
 	});

@@ -24,6 +24,16 @@ function comparePostsByDate(a, b) {
 	}
 }
 
+function comparePostsByScore(a, b) {
+	if (a.score < b.score) {
+		return -1;
+	} else if (a.score > b.score) {
+		return 1;
+	} else {
+		return comparePostsByDate(a, b);
+	}
+}
+
 function handleError(res, path, err) {
 	console.log(err);
 	res.render(path, {err});
@@ -38,7 +48,7 @@ function log(name, content) {
 module.exports = {
 	ensureLoggedIn,
 	ensureLoggedOut,
-	comparePostsByDate,
+	comparePostsByScore,
 	handleError,
 	log
 };

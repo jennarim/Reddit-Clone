@@ -44,6 +44,13 @@ router.get('/c/:category/:postSlug', (req, res) => {
 			Post.findOne({slug: req.params.postSlug})
 			.populate('author', 'username')
 			.populate('category', 'name')
+			.populate({
+				path: 'comments',
+				populate: {
+					path: 'byUser',
+					model: 'User'
+				}
+			})
 			.exec((err, post) => {
 				if (err) {
 					helper.handleError(res, 'post', err);

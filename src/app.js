@@ -31,12 +31,13 @@ hbs.registerPartial('postPartial', fs.readFileSync(path.join(__dirname, 'views/p
 hbs.registerPartial('errorPartial', fs.readFileSync(path.join(__dirname, 'views/partials/errorPartial.hbs'), 'utf8'));
 hbs.registerPartial('createPartial', fs.readFileSync(path.join(__dirname, 'views/partials/createPartial.hbs'), 'utf8'));
 hbs.registerPartial('requestPartial', fs.readFileSync(path.join(__dirname, 'views/partials/requestPartial.hbs'), 'utf8'));
+hbs.registerPartial('commentPartial', fs.readFileSync(path.join(__dirname, 'views/partials/commentPartial.hbs'), 'utf8'));
 
 hbs.registerHelper('isText', (post) => {
 	return post.type === 'text';
 });
 hbs.registerHelper('toDateString', (dateObj) => {
-	return dateObj.toDateString();
+	return dateObj.toDateString() + ' ' + dateObj.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })
 });
 hbs.registerHelper('getScore', (post) => {
 	return post.score;

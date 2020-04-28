@@ -1,5 +1,5 @@
 // Add validation on all inputs
-const allTextInput = document.querySelectorAll('.validate input[type="text"]');
+const allTextInput = document.querySelectorAll('.validate input[type="text"], .validate input[type="textarea"]');
 allTextInput.forEach(input => {
 	input.addEventListener('input', function () {
 		input.setCustomValidity('');
@@ -209,5 +209,38 @@ if (posts) {
 		upvoteBtn.addEventListener('click', handleUpvoteClick);
 		downvoteBtn.addEventListener('click', handleDownvoteClick);
 	}
+}
+
+// When user submits comment, send AJAX request
+function handleCommentSubmit(event) {
+	function handleLoad(xhr) {
+		if (xhr.status >= 300 && xhr.status <= 400) {
+			window.location = '/register';
+		} else if (xhr.status >= 200 && xhr.status < 300) {
+			console.log('response text', xhr.responseText);
+			const response = JSON.parse(xhr.responseText);
+
+			if (response.success) {
+				location.reload();
+			} else {
+				console.log('failure');
+			}
+		}
+	}
+
+	function handleError() {
+		console.log('error');
+	}
+
+ 	event.preventDefault();
+ 	const commentContent = escapeHtml(this.querySelector('#commentBox').value);
+ 	const postTitle = window.location.pathname.split('/')[3];
+ 	const bodyStr = `content=${commentContent}&postTitle=${postTitle}`;
+ 	post('/comment', handleLoad, handleError, bodyStr, event);
+}
+
+const commentForm = document.querySelector('#commentForm');
+if (commentForm) {
+	commentForm.addEventListener('submit', handleCommentSubmit);
 }
 
