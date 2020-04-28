@@ -8,7 +8,8 @@ const express = require('express'),
 	  hbs = require('hbs'),
 	  fs = require('fs'),
 	  passport = require('passport'),
-	  config = require('./config.json');
+	  config = require('./config.json')
+	  helmet = require('helmet');
 
 const app = express();
 const sessionOptions = { 
@@ -18,6 +19,7 @@ const sessionOptions = {
 };
 
 app.set('view engine', 'hbs');
+app.use(helmet());
 app.use(session(sessionOptions));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({extended: false}));
