@@ -178,9 +178,6 @@ Here's a [complex example from wikipedia](https://upload.wikimedia.org/wikipedia
 
 <!-- (___TODO__: list any tutorials/references/etc. that you've based your code off of_) -->
 
-1. [passport.js authentication docs](http://passportjs.org/docs) - (add link to source code that was based on this)
-2. [tutorial on vue.js](https://vuejs.org/v2/guide/) - (add link to source code that was based on this)
-
 1. [Form Validation](https://css-tricks.com/form-validation-part-2-constraint-validation-api-javascript/)
 2. [Regex to determine if link is image url](https://stackoverflow.com/questions/169625/regex-to-check-if-valid-url-that-ends-in-jpg-png-or-gif)
 3. [HTML Escaping to ensure user input is not displayed unescaped](http://shebang.mintern.net/foolproof-html-escaping-in-javascript/)
