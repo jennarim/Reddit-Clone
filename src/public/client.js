@@ -1,8 +1,8 @@
 // https://css-tricks.com/form-validation-part-2-constraint-validation-api-javascript/
 // https://stackoverflow.com/questions/169625/regex-to-check-if-valid-url-that-ends-in-jpg-png-or-gif
+// http://shebang.mintern.net/foolproof-html-escaping-in-javascript/
 
 const allTextInput = document.querySelectorAll('.validate input[type="text"]');
-
 allTextInput.forEach(input => {
 	input.addEventListener('input', function () {
 		input.setCustomValidity('');
@@ -42,7 +42,6 @@ const postType = document.querySelector('#post-type');
 if (postType) {
 	const postBody = document.querySelector('#post-body');
 	postType.addEventListener('change', function (event) {
-		console.log('before:', postBody);
 		if (postType.value === 'text') {
 			postBody.type = 'text';
 			postBody.placeholder = 'Enter post content here';
@@ -51,7 +50,6 @@ if (postType) {
 			postBody.placeholder = 'Enter url to image here';
 			postBody.pattern = '^https?://(?:[a-z0-9\-]+\.)+[a-z]{2,6}(?:/[^/#?]+)+\.(?:jpg|gif|png|jpeg)$';
 		}
-		console.log('after:', postBody);
 	});
 }
 
@@ -59,20 +57,25 @@ const dropdownAll = document.getElementById('dropdown-all');
 document.addEventListener('click', function(event) {
 	const dropdownContent = document.getElementById('dropdown-content');
 	if (dropdownAll.contains(event.target)) {
-		console.log('clicked');
 		dropdownContent.classList.remove('hidden');
 	} else {
 		dropdownContent.classList.add('hidden');
 	}
 });
 
+function escapeHtml(str) {
+	const div = document.createElement('div');
+	div.appendChild(document.createTextNode(str));
+	return div.innerHTML;
+}
+
 const categoryRequestForm = document.querySelector('#categoryRequestForm');
 if (categoryRequestForm) {
 	categoryRequestForm.addEventListener('submit', function (event) {
 		event.preventDefault();
-		console.log(categoryRequestForm.childNodes[1]);
-		const suggestion = categoryRequestForm.childNodes[0].value;
-		categoryRequestForm.innerHTML = "Thank you for suggestion!";
+		const suggestion = categoryRequestForm.childNodes[1].value;
+		console.log(escapeHtml(suggestion));
+		categoryRequestForm.textContent = `You suggested: ${suggestion}. Thank you for suggestion!`;
 	});
 }
 
@@ -86,89 +89,96 @@ if (posts) {
 	}
 }
 
-function vote(url) {
+function post(url, handleLoad, handleError, bodyStr) {
+	const xhr = new XMLHttpRequest();
+	xhr.open('POST', url);
+	xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
+	xhr.addEventListener('load', handleLoad.bind(this, xhr));
+	xhr.addEventListener('error', handleError);
+	xhr.send(bodyStr);
+}
 
+function displayUI(response, upvoteBtn, downvoteBtn) {
+	console.log(upvoteBtn);
+	console.log(downvoteBtn);
+	if (response.setUpvoteUI) {
+		upvoteBtn.classList.add('text-red-600');
+		downvoteBtn.classList.remove('text-blue-600');
+	} else {
+		upvoteBtn.classList.remove('text-red-600');
+	}
+	if (response.setDownvoteUI) {
+		downvoteBtn.classList.add('text-blue-600');
+		upvoteBtn.classList.remove('text-red-600');
+	} else {
+		downvoteBtn.classList.remove('text-blue-600');
+	}
+}
+
+function updateScore(btn, parse, text) {
+	const scoreDiv = btn.parentElement.querySelector('#score');
+	const newScore = parse(text).score;
+	scoreDiv.textContent = newScore;
 }
 
 function handleUpvoteClick(event) {
+	function handleLoad(xhr) {
+		if (xhr.status >= 300 && xhr.status < 400) {
+			window.location = '/register';
+		} else if (xhr.status >= 200 && xhr.status < 300) {
+			console.log('response text', xhr.responseText);
+			const response = JSON.parse(xhr.responseText);
+
+			if (response.success) {
+				updateScore(event.target, JSON.parse, xhr.responseText);
+				const upvoteBtn = event.target;
+				const downvoteBtn = upvoteBtn.parentElement.querySelector('#downvote');
+				displayUI(response, upvoteBtn, downvoteBtn);
+			} else {
+				console.log('failure');
+			}
+		}
+	}
+
+	function handleError() {
+		console.log(error);
+	}
+
 	event.stopPropagation();
 	event.preventDefault();
 	console.log('upvote clicked');
 
-	const xhr = new XMLHttpRequest();
-	xhr.open('POST', '/upvote');
-	xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
-	xhr.addEventListener('load', function() {
-		if (xhr.status >= 300 && xhr.status < 400) {
-			window.location = '/register';
-		} else if (xhr.status >= 200 && xhr.status < 300) {
-			console.log('response text', xhr.responseText);
-			const response = JSON.parse(xhr.responseText);
-			if (response.success) {
-				const newScore = JSON.parse(xhr.responseText).score;
-				const score = event.target.parentElement.querySelector('#score');
-				score.textContent = newScore;
 
-				if (response.setUpvoteUI) {
-				
-				} else {
-			
-				}
-				if (response.setDownvoteUI) {
-		
-				} else {
-					
-				}
-			} else {
-				console.log('failure');
-			}
-		}
-	});
-	xhr.addEventListener('error', function(error) {
-		console.log(error);
-	});
-	xhr.send(`postId=${this.querySelector('#objId').value}`);
+	post('/upvote', handleLoad, handleError, `postId=${this.querySelector('#objId').value}`);
 }
 
 function handleDownvoteClick(event) {
-	event.preventDefault();
-	console.log('downvote clicked');
-
-	const xhr = new XMLHttpRequest();
-	xhr.open('POST', '/downvote');
-	xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
-	xhr.addEventListener('load', function() {
+	function handleLoad(xhr) {
 		if (xhr.status >= 300 && xhr.status < 400) {
 			window.location = '/register';
 		} else if (xhr.status >= 200 && xhr.status < 300) {
 			console.log('response text', xhr.responseText);
 			const response = JSON.parse(xhr.responseText);
-			if (response.success) {
-				const newScore = JSON.parse(xhr.responseText).score;
-				const score = event.target.parentElement.querySelector('#score');
-				console.log('parentElement', event.target.parentElement);
-				score.textContent = newScore;
 
-				if (response.setUpvoteUI) {
-					console.log(event.target.querySelector('span'));
-					event.target.querySelector('span').classList.add('text-red-600');
-				} else {
-					console.log(event.target.querySelector('span'));
-					event.target.querySelector('span').classList.remove('text-red-600');
-				}
-				if (response.setDownvoteUI) {
-					event.target.querySelector('span').classList.add('text-blue-600');
-				} else {
-					event.target.querySelector('span').classList.remove('text-red-600');
-				}
+			if (response.success) {
+				updateScore(event.target, JSON.parse, xhr.responseText);
+				const downvoteBtn = event.target;
+				const upvoteBtn = downvoteBtn.parentElement.querySelector('#upvote');
+				displayUI(response, upvoteBtn, downvoteBtn);
 			} else {
 				console.log('failure');
 			}
 		}
-	});
-	xhr.addEventListener('error', function(error) {
+	}
+
+	function handleError() {
 		console.log(error);
-	});
-	xhr.send(`postId=${this.querySelector('#objId').value}`);
+	}
+
+	event.stopPropagation();
+	event.preventDefault();
+	console.log('downvote clicked');
+
+	post('/downvote', handleLoad, handleError, `postId=${this.querySelector('#objId').value}`);
 }
 
