@@ -119,7 +119,7 @@ function post(url, handleLoad, handleError, bodyStr, event) {
 function getHandlerFor(vote) {
 	function handleLoad(xhr, event) {
 		const clickedBtn = event.target;
-		if (xhr.status >= 300 && xhr.status < 400) {
+		if (xhr.status >= 300 && xhr.status <= 400) {
 			window.location = '/register';
 		} else if (xhr.status >= 200 && xhr.status < 300) {
 			console.log('response text', xhr.responseText);
