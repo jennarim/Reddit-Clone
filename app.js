@@ -31,7 +31,7 @@ const sessionOptions = {
 app.set('view engine', 'hbs');
 app.use(helmet());
 app.use(session(sessionOptions));
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, '/public')));
 app.use(express.urlencoded({extended: false}));
 app.use(passport.initialize());
 app.use(passport.session());
