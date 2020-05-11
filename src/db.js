@@ -49,18 +49,18 @@ mongoose.set('useFindAndModify', false);
 const fs = require('fs');
 const path = require('path');
 const fn = path.join(__dirname, 'config.json');
-console.log('freud:', process.env.secret);
-const data = fs.readFileSync(fn);
-const conf = JSON.parse(data);
+
+// const data = fs.readFileSync(fn);
+// const conf = JSON.parse(data);
 
 let dbconf;
 
 if (process.env.NODE_ENV === 'PRODUCTION') {
-	dbconf = conf.dbconf;
+	dbconf = process.env.dbconf;
 } else {
 	// dbconf = "mongodb://localhost/redditClone";
 	// dbconf = `mongodb+srv://${conf.username}:${conf.password}@redditclone-mnc1c.mongodb.net/redditClone?retryWrites=true&w=majority`;
-	dbconf = conf.dbconf;
+	dbconf = process.env.dbconf;
 }
 
 mongoose.connect(dbconf, {useNewUrlParser: true, useUnifiedTopology: true});

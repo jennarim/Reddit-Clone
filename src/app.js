@@ -8,12 +8,11 @@ const express = require('express'),
       hbs = require('hbs'),
       fs = require('fs'),
       passport = require('passport'),
-      config = require('./config.json'),
       helmet = require('helmet');
 
 const app = express();
 const sessionOptions = { 
-    secret: config.secret, 
+    secret: process.env.secret, 
     saveUninitialized: true,
     cookie: {httpOnly: true},
     resave: true 
