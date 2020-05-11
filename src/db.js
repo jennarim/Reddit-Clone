@@ -46,21 +46,21 @@ mongoose.model('Comment', commentSchema);
 
 mongoose.set('useFindAndModify', false);
 
-const fs = require('fs');
-const path = require('path');
-const fn = path.join(__dirname, 'config.json');
-
-// const data = fs.readFileSync(fn);
-// const conf = JSON.parse(data);
-
 let dbconf;
 
 if (process.env.NODE_ENV === 'PRODUCTION') {
-	dbconf = process.env.dbconf;
+	dbconf = process.env.dbconf + '';
 } else {
 	// dbconf = "mongodb://localhost/redditClone";
 	// dbconf = `mongodb+srv://${conf.username}:${conf.password}@redditclone-mnc1c.mongodb.net/redditClone?retryWrites=true&w=majority`;
-	dbconf = process.env.dbconf;
+	const fs = require('fs');
+	const path = require('path');
+	const fn = path.join(__dirname, 'config.json');
+
+	const data = fs.readFileSync(fn);
+	const conf = JSON.parse(data);
+
+	dbconf = conf.dbconf;
 }
 
 mongoose.connect(dbconf, {useNewUrlParser: true, useUnifiedTopology: true});

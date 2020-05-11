@@ -11,8 +11,18 @@ const express = require('express'),
       helmet = require('helmet');
 
 const app = express();
+
+let secret;
+if (process.env.NODE_ENV === 'PRODUCTION') {
+	secret = process.env.secret;
+} else {
+	const fn = path.join(__dirname, 'config.json');
+	const data = fs.readFileSync(fn);
+	const conf = JSON.parse(data);
+	secret = conf.secret;
+}
 const sessionOptions = { 
-    secret: process.env.secret, 
+    secret: secret, 
     saveUninitialized: true,
     cookie: {httpOnly: true},
     resave: true 
