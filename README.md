@@ -2,7 +2,7 @@
 
 ## Overview
 
-<!-- (___TODO__: a brief one or two paragraph, high-level description of your project_) -->
+
 Reddit Clone is a web app based off of the social news discussion site, Reddit. Visitors of the site can view relevant posts under broad categories such as programming and pictures. Users can register and login to create their own text/image posts. Users can also access their profile, where they will be able to see the posts they have made. In addition to that, users can upvote or downvote posts to express which posts they like or dislike. The most popular posts will be shown on the homepage. On any post, users can also add comments.
 
 ## Data Model
