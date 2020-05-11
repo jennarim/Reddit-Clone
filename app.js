@@ -36,6 +36,7 @@ app.use(express.urlencoded({extended: false}));
 app.use(passport.initialize());
 app.use(passport.session());
 
+
 hbs.registerPartial('postPartial', fs.readFileSync(path.join(__dirname, 'views/partials/postPartial.hbs'), 'utf8'));
 hbs.registerPartial('errorPartial', fs.readFileSync(path.join(__dirname, 'views/partials/errorPartial.hbs'), 'utf8'));
 hbs.registerPartial('createPartial', fs.readFileSync(path.join(__dirname, 'views/partials/createPartial.hbs'), 'utf8'));
