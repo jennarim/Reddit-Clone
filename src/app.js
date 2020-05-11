@@ -15,7 +15,6 @@ const app = express();
 let secret;
 if (process.env.NODE_ENV === 'PRODUCTION') {
 	secret = process.env.secret;
-	console.log(secret);
 } else {
 	const fn = path.join(__dirname, 'config.json');
 	const data = fs.readFileSync(fn);

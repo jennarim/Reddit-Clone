@@ -49,8 +49,7 @@ mongoose.set('useFindAndModify', false);
 let dbconf;
 
 if (process.env.NODE_ENV === 'PRODUCTION') {
-	dbconf = process.env.dbconf + '';
-	console.log(dbconf);
+	dbconf = process.env.dbconf;
 } else {
 	// dbconf = "mongodb://localhost/redditClone";
 	// dbconf = `mongodb+srv://${conf.username}:${conf.password}@redditclone-mnc1c.mongodb.net/redditClone?retryWrites=true&w=majority`;
@@ -64,4 +63,5 @@ if (process.env.NODE_ENV === 'PRODUCTION') {
 	dbconf = conf.dbconf;
 }
 
+console.log(dbconf);
 mongoose.connect(dbconf, {useNewUrlParser: true, useUnifiedTopology: true});
