@@ -50,6 +50,7 @@ let dbconf;
 
 if (process.env.NODE_ENV === 'PRODUCTION') {
 	dbconf = process.env.dbconf + '';
+	console.log(dbconf);
 } else {
 	// dbconf = "mongodb://localhost/redditClone";
 	// dbconf = `mongodb+srv://${conf.username}:${conf.password}@redditclone-mnc1c.mongodb.net/redditClone?retryWrites=true&w=majority`;
