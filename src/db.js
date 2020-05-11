@@ -50,7 +50,7 @@ let dbconf;
 
 if (process.env.NODE_ENV === 'PRODUCTION') {
 	dbconf = process.env.dbconf;
-	
+
 } else {
 	// dbconf = "mongodb://localhost/redditClone";
 	// dbconf = `mongodb+srv://${conf.username}:${conf.password}@redditclone-mnc1c.mongodb.net/redditClone?retryWrites=true&w=majority`;
@@ -65,4 +65,10 @@ if (process.env.NODE_ENV === 'PRODUCTION') {
 }
 
 console.log(dbconf);
-mongoose.connect(dbconf, {useNewUrlParser: true, useUnifiedTopology: true});
+mongoose.connect(dbconf, {useNewUrlParser: true, useUnifiedTopology: true})
+.then(res => {
+	console.log("DB connected1");
+})
+.catch(err => {
+	console.log('error', err.message);
+});
