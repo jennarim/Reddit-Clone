@@ -38,7 +38,7 @@ router.post('/register', (req, res) => {
 	if (req.body.password !== req.body.passwordConfirmation) {
 		res.render('register', {err: {errors: [{message: 'Passwords do not match.'}]}});
 	} else {
-		const newUser = new User({username: req.body.username, password: req.body.password});
+		const newUser = new User({username: req.body.username});
 		newUser.validate((err) => {
 			if (err) {
 				res.render('register', {err});
