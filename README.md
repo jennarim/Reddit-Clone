@@ -1,7 +1,6 @@
 # Reddit Clone
-<div style="text-align:center">
-<img src="documentation/logo.png" alt="Reddit Clone logo"> 
-</div>
+<img src="documentation/logo.png" alt="Reddit Clone logo" style="display:block;margin:auto"> 
+
 
 ## Overview
 
