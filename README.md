@@ -1,5 +1,6 @@
 # Reddit Clone
-![Reddit Clone logo](documentation/logo.png)
+<img align="center" src="documentation/logo.png" alt="Reddit Clone logo"> 
+
 ## Overview
 
 
