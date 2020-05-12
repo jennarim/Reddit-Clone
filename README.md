@@ -27,7 +27,7 @@ Here is a working live demo: https://jennarim-reddit-clone.herokuapp.com/
 * Register/Login - Easily create an account to use features such as posting, commenting, and voting
 ![post](documentation/gifs/register.gif)
 
-To-do
+**To-do**
 * Delete posts/comments
 * Support links as a post type
 * Vote on comments
