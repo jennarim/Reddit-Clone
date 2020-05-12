@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="documentation/logo.png" alt="Reddit Clone logo"> 
+  <img src="documentation/pics/logo.png" alt="Reddit Clone logo"> 
 </p>
 
 
@@ -15,9 +15,13 @@ Here is a working live demo: https://jennarim-reddit-clone.herokuapp.com/
 * Submit texts posts and images relevant to categories such as programming and pics
 ![post](documentation/gifs/post.gif)
 * Comment on posts that other users have made
+![post](documentation/gifs/comment.gif)
 * Vote on posts to express posts you like or dislike
+![post](documentation/gifs/vote.gif)
 * View posts a specific user made
+![post](documentation/gifs/userpage.gif)
 * Register/Login - Easily create an account to use features such as posting, commenting, and voting
+![post](documentation/gifs/register.gif)
 
 
 ## Built with
