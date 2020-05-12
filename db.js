@@ -63,11 +63,10 @@ if (process.env.NODE_ENV === 'PRODUCTION') {
 	dbconf = conf.dbconf;
 }
 
-console.log(dbconf);
 mongoose.connect(dbconf, {useNewUrlParser: true, useUnifiedTopology: true})
 .then(res => {
-	console.log("DB connected1");
+	console.log("DB connected.");
 })
 .catch(err => {
-	console.log('error', err.message);
+	console.log('Error connecting to db.', err.message);
 });
