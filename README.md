@@ -1,5 +1,5 @@
 # Reddit Clone
-![Reddit Clone logo](./documentation/logo/png)
+![Reddit Clone logo](documentation/logo.png)
 ## Overview
 
 
