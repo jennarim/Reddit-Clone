@@ -59,9 +59,9 @@ const Category = mongoose.model('Category');
 app.use((req, res, next) => {
 	if (req.user) {
 		res.locals.userId = req.user._id;
-		res.locals.username = req.user.username;
+		res.locals.loggedInUsername = req.user.loggedInUsername;
 	} else {
-		res.locals.username = undefined;
+		res.locals.loggedInUsername = undefined;
 	}
 	next();
 });
